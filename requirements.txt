@@ -1,0 +1,7 @@
+uvicorn
+fastapi
+pydantic
+pydantic-settings
+typer[all]
+langchain-ollama
+ollama
