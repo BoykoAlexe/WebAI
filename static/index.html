@@ -100,6 +100,7 @@
             gap: 10px;
             margin-bottom: 18px;
             animation: fade-in 0.4s ease;
+            align-items: flex-start;
         }
         .message-header {
             display: flex;
@@ -120,6 +121,16 @@
         }
         .message.ai .avatar { background: linear-gradient(135deg, #0ea5e9, #6366f1); }
         .username { font-weight: 700; color: #0f172a; }
+        .message.ai {
+            align-items: flex-end;
+            text-align: right;
+        }
+        .message.ai .message-header {
+            flex-direction: row-reverse;
+        }
+        .message.ai .bubble {
+            align-self: flex-end;
+        }
         .bubble {
             padding: 14px 16px;
             border-radius: 16px;
@@ -250,7 +261,8 @@
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
     <script>
         function escapeHtml(text) {
             const div = document.createElement('div');
@@ -263,12 +275,16 @@
         const usernameInput = document.getElementById('username');
         const sendBtn = document.getElementById('send-btn');
 
+        function renderMarkdown(text) {
+            return DOMPurify.sanitize(marked.parse(text, { breaks: true }));
+        }
+
         function createAvatarLetter(name) {
             return escapeHtml(name.trim().charAt(0).toUpperCase() || 'А');
         }
 
         function appendMessage(user, text, options = {}) {
-            const { role = 'user', isTyping = false } = options;
+            const { role = 'user', isTyping = false, markdown = false } = options;
             const message = document.createElement('div');
             message.className = `message ${role}`;
 
@@ -291,7 +307,11 @@
             bubble.className = 'bubble';
             const textSpan = document.createElement('span');
             textSpan.className = isTyping ? 'typing' : 'text';
-            textSpan.textContent = text;
+            if (markdown && !isTyping) {
+                textSpan.innerHTML = renderMarkdown(text);
+            } else {
+                textSpan.textContent = text;
+            }
             bubble.appendChild(textSpan);
             message.appendChild(bubble);
 
@@ -300,7 +320,7 @@
             return textSpan;
         }
 
-        function typeText(element, fullText, delay = 22) {
+        function typeText(element, fullText, delay = 22, renderer) {
             return new Promise(resolve => {
                 let i = 0;
                 const timer = setInterval(() => {
@@ -310,6 +330,9 @@
                         chatBox.scrollTop = chatBox.scrollHeight;
                     } else {
                         clearInterval(timer);
+                        if (typeof renderer === 'function') {
+                            element.innerHTML = renderer(fullText);
+                        }
                         resolve();
                     }
                 }, delay);
@@ -327,7 +350,7 @@
                 } else {
                     messages.forEach(msg => {
                         const role = msg.username && msg.username.toLowerCase() === 'ai' ? 'ai' : 'user';
-                        appendMessage(msg.username, msg.text, { role });
+                        appendMessage(msg.username, msg.text, { role, markdown: role === 'ai' });
                     });
                 }
             } catch (err) {
@@ -364,13 +387,13 @@
 
                 typingText.closest('.message')?.remove();
 
-                const aiTextSpan = appendMessage(data.ai_message.username, '', { role: 'ai' });
-                await typeText(aiTextSpan, data.ai_message.text);
+                const aiTextSpan = appendMessage(data.ai_message.username, '', { role: 'ai', markdown: true });
+                await typeText(aiTextSpan, data.ai_message.text, 22, renderMarkdown);
 
             } catch (err) {
                 console.error('Ошибка:', err);
                 typingText.closest('.message')?.remove();
-                appendMessage('Система', 'Не удалось получить ответ от сервера', { role: 'ai' });
+                appendMessage('Система', 'Не удалось получить ответ от сервера', { role: 'ai', markdown: true });
             } finally {
                 sendBtn.disabled = false;
                 messageInput.focus();
