@@ -1,9 +1,10 @@
+import hashlib
 import json
 import uuid
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 
 DATA_FILE = Path("storage_data.json")
@@ -37,23 +38,76 @@ def _save_data(data: Dict) -> None:
 _data = _load_data()
 
 
+def _hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+
+def _find_user(username: str) -> Optional[Dict]:
+    return next((u for u in _data["users"] if u["username"].lower() == username.lower()), None)
+
+
+def _public_user(user: Dict) -> Dict:
+    return {k: v for k, v in user.items() if k != "password_hash"}
+
+
 def get_or_create_user(username: str) -> Dict:
     """Находит пользователя по имени или создаёт нового."""
-    existing = next((u for u in _data["users"] if u["username"].lower() == username.lower()), None)
+    existing = _find_user(username)
     if existing:
         _data["logins"].append({"user_id": existing["id"], "timestamp": _now_iso()})
         _save_data(_data)
-        return existing
+        return _public_user(existing)
 
     user = {
         "id": str(uuid.uuid4()),
         "username": username,
+        "password_hash": _hash_password(""),
         "created_at": _now_iso(),
     }
     _data["users"].append(user)
     _data["logins"].append({"user_id": user["id"], "timestamp": _now_iso()})
     _save_data(_data)
-    return user
+    return _public_user(user)
+
+
+def register_user(username: str, password: str) -> Dict:
+    if not username.strip():
+        raise ValueError("Имя пользователя не может быть пустым")
+    if not password:
+        raise ValueError("Пароль не может быть пустым")
+
+    existing = _find_user(username)
+    if existing and existing.get("password_hash"):
+        raise ValueError("Пользователь с таким именем уже существует")
+
+    # Разрешаем задать пароль для пользователя из старых данных без пароля
+    if existing and not existing.get("password_hash"):
+        existing["password_hash"] = _hash_password(password)
+        _save_data(_data)
+        return _public_user(existing)
+
+    user = {
+        "id": str(uuid.uuid4()),
+        "username": username,
+        "password_hash": _hash_password(password),
+        "created_at": _now_iso(),
+    }
+    _data["users"].append(user)
+    _save_data(_data)
+    return _public_user(user)
+
+
+def authenticate_user(username: str, password: str) -> Optional[Dict]:
+    user = _find_user(username)
+    if not user or not user.get("password_hash"):
+        return None
+
+    if user["password_hash"] != _hash_password(password):
+        return None
+
+    _data["logins"].append({"user_id": user["id"], "timestamp": _now_iso()})
+    _save_data(_data)
+    return _public_user(user)
 
 
 def get_login_history(user_id: str) -> List[Dict]:
@@ -80,7 +134,10 @@ def get_chat(chat_id: str) -> Dict | None:
     return next((chat for chat in _data["chats"] if chat["id"] == chat_id), None)
 
 
-def add_message(chat_id: str, username: str, text: str, role: str) -> Dict:
+def add_message(chat_id: str, username: str, text: str, role: str) -> Tuple[Dict, Optional[Dict]]:
+    existing_messages = [msg for msg in _data["messages"] if msg["chat_id"] == chat_id]
+    is_first_for_chat = not existing_messages and role == "user"
+
     message = {
         "id": str(uuid.uuid4()),
         "chat_id": chat_id,
@@ -89,9 +146,17 @@ def add_message(chat_id: str, username: str, text: str, role: str) -> Dict:
         "role": role,
         "created_at": _now_iso(),
     }
+
+    updated_chat = None
+    if is_first_for_chat:
+        chat = get_chat(chat_id)
+        if chat:
+            chat["title"] = (text.strip() or "Новый чат")[:60]
+            updated_chat = chat
+
     _data["messages"].append(message)
     _save_data(_data)
-    return message
+    return message, updated_chat
 
 
 def get_messages(chat_id: str) -> List[Dict]:

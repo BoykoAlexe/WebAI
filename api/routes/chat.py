@@ -2,15 +2,15 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from pathlib import Path
 
-from ..models.message import ChatCreate, LoginRequest, MessageCreate
+from ..models.message import ChatCreate, LoginRequest, MessageCreate, RegisterRequest
 from storage import (
     add_message,
+    authenticate_user,
     create_chat,
     get_chat,
     get_chats,
-    get_login_history,
     get_messages,
-    get_or_create_user,
+    register_user,
 )
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
@@ -42,12 +42,25 @@ async def get_chat_page():
     return HTMLResponse(html_path.read_text(encoding="utf-8"))
 
 
+@router.post("/api/register")
+async def register(payload: RegisterRequest):
+    try:
+        user = register_user(payload.username, payload.password)
+    except ValueError as exc:  # pragma: no cover - ValueError used for validation
+        raise HTTPException(status_code=400, detail=str(exc))
+
+    chats = get_chats(user["id"])
+    return {"user": user, "chats": chats}
+
+
 @router.post("/api/login")
 async def login(payload: LoginRequest):
-    user = get_or_create_user(payload.username)
-    history = get_login_history(user["id"])
+    user = authenticate_user(payload.username, payload.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Неверные имя пользователя или пароль")
+
     chats = get_chats(user["id"])
-    return {"user": user, "login_history": history, "chats": chats}
+    return {"user": user, "chats": chats}
 
 
 @router.get("/api/chats")
@@ -74,17 +87,18 @@ async def send_message(chat_id: str, msg: MessageCreate):
     if not chat:
         raise HTTPException(status_code=404, detail="Чат не найден")
 
-    user_msg = add_message(chat_id, msg.username, msg.text, role="user")
+    user_msg, updated_chat = add_message(chat_id, msg.username, msg.text, role="user")
 
     try:
         ai_text = get_ai_response(msg.text)
     except Exception as e:
         ai_text = f"[Ошибка генерации: {str(e)}]"
 
-    ai_msg = add_message(chat_id, AI_NAME, ai_text, role="ai")
+    ai_msg, _ = add_message(chat_id, AI_NAME, ai_text, role="ai")
 
     return {
         "status": "ok",
         "user_message": user_msg,
         "ai_message": ai_msg,
+        "chat": updated_chat or chat,
     }
