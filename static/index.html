@@ -149,6 +149,11 @@
       min-height: 100vh;
       position: relative;
       z-index: 1;
+      transition: grid-template-columns 0.3s ease;
+    }
+
+    #layout.collapsed {
+      grid-template-columns: 0 1fr;
     }
 
     @media (max-width: 920px) {
@@ -166,11 +171,43 @@
       backdrop-filter: blur(8px);
       background: rgba(255,255,255,0.7);
       border-right: 1px solid rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    #layout.collapsed #sidebar {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
     }
 
     [data-theme="dark"] #sidebar {
       background: rgba(15,23,42,0.75);
       border-color: rgba(255,255,255,0.06);
+    }
+
+    #sidebar-toggle {
+      position: fixed;
+      top: 72px;
+      left: 16px;
+      z-index: 25;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    #sidebar-toggle:hover { transform: translateY(-2px); }
+
+    [data-theme="dark"] #sidebar-toggle {
+      background: rgba(17,24,39,0.92);
+      color: #e5e7eb;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.45);
     }
 
     #sidebar h3 {
@@ -275,17 +312,6 @@
     }
 
     .chat-item-date { color: var(--muted); font-size: 13px; }
-
-    .history {
-      margin-top: 8px;
-      border-top: 1px solid rgba(0,0,0,0.05);
-      padding-top: 10px;
-    }
-
-    .history ul { list-style: none; max-height: 120px; overflow-y: auto; }
-    .history li { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
-
-    [data-theme="dark"] .history { border-color: rgba(255,255,255,0.06); }
 
     #main-panel {
       position: relative;
@@ -573,7 +599,21 @@
       margin-bottom: 12px;
     }
 
+    #password-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+    }
+
     [data-theme="dark"] #username-input {
+      background: #111827;
+      border-color: #2c3548;
+      color: var(--text);
+    }
+
+    [data-theme="dark"] #password-input {
       background: #111827;
       border-color: #2c3548;
       color: var(--text);
@@ -591,6 +631,21 @@
       box-shadow: 0 10px 20px rgba(0,80,180,0.25);
     }
 
+    .auth-switch {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .auth-switch button {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
   </style>
 </head>
 
@@ -603,12 +658,19 @@
 
   <div class="glow"></div>
 
+  <button id="sidebar-toggle">Скрыть панель</button>
+
   <div id="auth-overlay">
     <div class="auth-card">
-      <h2>Вход</h2>
-      <p>Введите имя, чтобы увидеть сохранённые чаты.</p>
-      <input id="username-input" type="text" placeholder="Ваше имя" autocomplete="off" />
-      <button id="login-btn">Продолжить</button>
+      <h2 id="auth-title">Вход</h2>
+      <p id="auth-description">Введите имя пользователя и пароль.</p>
+      <input id="username-input" type="text" placeholder="Имя пользователя" autocomplete="off" />
+      <input id="password-input" type="password" placeholder="Пароль" autocomplete="current-password" />
+      <button id="login-btn">Войти</button>
+      <div class="auth-switch">
+        Нет аккаунта?
+        <button id="switch-auth" type="button">Зарегистрироваться</button>
+      </div>
     </div>
   </div>
 
@@ -617,12 +679,8 @@
       <div class="user-card">
         <div class="pill">Онлайн</div>
         <div class="user-name" id="sidebar-username">Гость</div>
-        <div class="user-meta" id="sidebar-meta">Нет входов</div>
+        <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
         <button id="new-chat">Новый чат</button>
-        <div class="history">
-          <div class="user-meta">История авторизаций</div>
-          <ul id="login-history"></ul>
-        </div>
       </div>
       <h3>Чаты</h3>
       <div id="chat-list"></div>
@@ -691,18 +749,24 @@
     const sendBtn = document.getElementById("send-btn");
     const authOverlay = document.getElementById("auth-overlay");
     const usernameInput = document.getElementById("username-input");
+    const passwordInput = document.getElementById("password-input");
     const loginBtn = document.getElementById("login-btn");
+    const switchAuthBtn = document.getElementById("switch-auth");
+    const authTitle = document.getElementById("auth-title");
+    const authDescription = document.getElementById("auth-description");
     const sidebarUsername = document.getElementById("sidebar-username");
     const sidebarMeta = document.getElementById("sidebar-meta");
-    const loginHistoryList = document.getElementById("login-history");
     const chatList = document.getElementById("chat-list");
     const newChatBtn = document.getElementById("new-chat");
+    const layout = document.getElementById("layout");
+    const sidebarToggle = document.getElementById("sidebar-toggle");
 
     const state = {
       user: null,
       chats: [],
       currentChatId: null,
-      loginHistory: [],
+      authMode: "login",
+      sidebarCollapsed: false,
     };
 
     function renderMarkdown(text) {
@@ -777,20 +841,15 @@
       fixedInput.style.display = show ? "none" : "block";
     }
 
-    function renderLoginHistory(history) {
-      loginHistoryList.innerHTML = "";
-      if (!history.length) {
-        const li = document.createElement("li");
-        li.textContent = "Пока нет входов";
-        loginHistoryList.appendChild(li);
+    function updateSidebarMeta(user) {
+      if (!user) {
+        sidebarMeta.textContent = "Авторизуйтесь, чтобы начать.";
         return;
       }
 
-      history.slice(-10).reverse().forEach(entry => {
-        const li = document.createElement("li");
-        li.textContent = formatDate(entry.timestamp);
-        loginHistoryList.appendChild(li);
-      });
+      sidebarMeta.textContent = user.created_at
+        ? `Зарегистрирован: ${formatDate(user.created_at)}`
+        : "Готовы к диалогам";
     }
 
     function renderChatList() {
@@ -802,7 +861,7 @@
 
         const title = document.createElement("div");
         title.className = "chat-item-title";
-        title.textContent = chat.title;
+        title.textContent = chat.title || "Новый чат";
 
         const date = document.createElement("div");
         date.className = "chat-item-date";
@@ -814,12 +873,10 @@
       });
     }
 
-    function setUser(user, history) {
+    function setUser(user) {
       state.user = user;
-      state.loginHistory = history || [];
       sidebarUsername.textContent = user.username;
-      sidebarMeta.textContent = `Всего входов: ${state.loginHistory.length}`;
-      renderLoginHistory(state.loginHistory);
+      updateSidebarMeta(user);
     }
 
     async function loadMessages(chatId) {
@@ -880,6 +937,16 @@
         const data = await res.json();
         typingMsg.remove();
 
+        if (data.chat) {
+          const idx = state.chats.findIndex(chat => chat.id === data.chat.id);
+          if (idx >= 0) {
+            state.chats[idx] = data.chat;
+          } else {
+            state.chats.unshift(data.chat);
+          }
+          renderChatList();
+        }
+
         const aiText = data.ai_message?.text ?? "Ошибка сервера";
         const aiSpan = appendMessage("ai", "", { markdown: true });
 
@@ -896,7 +963,7 @@
       if (!txt) return welcomeInput.focus();
 
       if (!state.currentChatId) {
-        const firstChat = await createChat(txt.slice(0, 40) || "Новый чат");
+        const firstChat = await createChat("Новый чат");
         await selectChat(firstChat.id);
       }
 
@@ -916,42 +983,65 @@
       messageInput.focus();
     }
 
-    async function handleLogin() {
+    function setAuthMode(mode) {
+      state.authMode = mode;
+      const isLogin = mode === "login";
+      authTitle.textContent = isLogin ? "Вход" : "Регистрация";
+      authDescription.textContent = isLogin
+        ? "Введите имя пользователя и пароль."
+        : "Создайте новый аккаунт, указав имя и пароль.";
+      loginBtn.textContent = isLogin ? "Войти" : "Зарегистрироваться";
+      switchAuthBtn.textContent = isLogin ? "Зарегистрироваться" : "У меня уже есть аккаунт";
+    }
+
+    async function handleAuth() {
       const name = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
       if (!name) return usernameInput.focus();
+      if (!password) return passwordInput.focus();
+
+      const endpoint = state.authMode === "login" ? "/api/login" : "/api/register";
 
       try {
-        const res = await fetch("/api/login", {
+        const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: name }),
+          body: JSON.stringify({ username: name, password }),
         });
-        if (!res.ok) throw new Error();
+
+        if (!res.ok) {
+          const error = await res.json().catch(() => ({}));
+          const message = error.detail || "Не удалось выполнить запрос";
+          throw new Error(message);
+        }
+
         const data = await res.json();
-        setUser(data.user, data.login_history);
+        setUser(data.user);
         state.chats = data.chats || [];
+        state.currentChatId = null;
         renderChatList();
         authOverlay.classList.add("hidden");
-        localStorage.setItem("webai_user", JSON.stringify(data.user));
+        localStorage.setItem("last_username", name);
+        passwordInput.value = "";
 
         if (!state.chats.length) {
           const chat = await createChat("Новый чат");
           await selectChat(chat.id);
+          toggleWelcome(true);
         } else {
           await selectChat(state.chats[0].id);
         }
         welcomeInput.focus();
       } catch (e) {
-        alert("Не удалось выполнить вход. Попробуйте позже.");
+        alert(e.message || "Не удалось выполнить вход. Попробуйте позже.");
       }
     }
 
-    async function restoreSession() {
-      const stored = localStorage.getItem("webai_user");
-      if (!stored) return;
-      const user = JSON.parse(stored);
-      usernameInput.value = user.username;
-      await handleLogin();
+    function restoreSession() {
+      const storedName = localStorage.getItem("last_username");
+      if (storedName) {
+        usernameInput.value = storedName;
+      }
     }
 
     welcomeSend.addEventListener("click", sendFirst);
@@ -960,8 +1050,15 @@
     sendBtn.addEventListener("click", sendMessage);
     messageInput.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
 
-    loginBtn.addEventListener("click", handleLogin);
-    usernameInput.addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+    loginBtn.addEventListener("click", handleAuth);
+    usernameInput.addEventListener("keydown", e => { if (e.key === "Enter") handleAuth(); });
+    passwordInput.addEventListener("keydown", e => { if (e.key === "Enter") handleAuth(); });
+    switchAuthBtn.addEventListener("click", () => {
+      const nextMode = state.authMode === "login" ? "register" : "login";
+      setAuthMode(nextMode);
+      passwordInput.value = "";
+      usernameInput.focus();
+    });
     newChatBtn.addEventListener("click", async () => {
       if (!state.user) return;
       const chat = await createChat("Новый чат");
@@ -970,8 +1067,15 @@
       welcomeInput.focus();
     });
 
+    sidebarToggle.addEventListener("click", () => {
+      state.sidebarCollapsed = !state.sidebarCollapsed;
+      layout.classList.toggle("collapsed", state.sidebarCollapsed);
+      sidebarToggle.textContent = state.sidebarCollapsed ? "Показать панель" : "Скрыть панель";
+    });
+
     window.addEventListener("load", () => {
       usernameInput.focus();
+      setAuthMode("login");
       restoreSession();
     });
   </script>
