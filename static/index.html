@@ -143,6 +143,155 @@
       max-width: 130px;
     }
 
+    #layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 920px) {
+      #layout {
+        grid-template-columns: 1fr;
+      }
+      #sidebar {
+        position: static;
+        height: auto;
+      }
+    }
+
+    #sidebar {
+      padding: 20px 16px 140px;
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.7);
+      border-right: 1px solid rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] #sidebar {
+      background: rgba(15,23,42,0.75);
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    #sidebar h3 {
+      margin-bottom: 12px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+    }
+
+    .user-card {
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 12px;
+      padding: 14px 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] .user-card {
+      background: rgba(24,32,45,0.8);
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .user-meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,80,180,0.08);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    [data-theme="dark"] .pill {
+      background: rgba(120,170,255,0.12);
+      color: #99c7ff;
+    }
+
+    #new-chat {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, #0054b3, #3399ff);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,83,179,0.2);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 14px;
+    }
+
+    #new-chat:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(0,83,179,0.25); }
+
+    #chat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .chat-item {
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease, border 0.2s ease;
+    }
+
+    .chat-item.active {
+      border-color: rgba(0,80,180,0.35);
+      box-shadow: 0 6px 18px rgba(0,80,180,0.18);
+    }
+
+    [data-theme="dark"] .chat-item {
+      background: rgba(24,32,45,0.7);
+      border-color: rgba(255,255,255,0.04);
+    }
+
+    .chat-item-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .chat-item-date { color: var(--muted); font-size: 13px; }
+
+    .history {
+      margin-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      padding-top: 10px;
+    }
+
+    .history ul { list-style: none; max-height: 120px; overflow-y: auto; }
+    .history li { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+
+    [data-theme="dark"] .history { border-color: rgba(255,255,255,0.06); }
+
+    #main-panel {
+      position: relative;
+      padding: 0;
+    }
+
     #chat {
       max-width: 800px;
       margin: 0 auto;
@@ -384,6 +533,64 @@
       background: #1f2937;
     }
 
+    /* Auth overlay */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    #auth-overlay.hidden { display: none; }
+
+    .auth-card {
+      width: 360px;
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+
+    [data-theme="dark"] .auth-card {
+      background: #1f2937;
+      color: #e8ecf7;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    }
+
+    .auth-card h2 { margin-bottom: 10px; }
+    .auth-card p { color: var(--muted); margin-bottom: 16px; }
+
+    #username-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+    }
+
+    [data-theme="dark"] #username-input {
+      background: #111827;
+      border-color: #2c3548;
+      color: var(--text);
+    }
+
+    #login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0054b3, #3399ff);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,80,180,0.25);
+    }
+
   </style>
 </head>
 
@@ -396,33 +603,58 @@
 
   <div class="glow"></div>
 
-  <div class="logo">
-    <img src="/static/offi_logo.png" alt="logo"/>
-  </div>
-
-  <div id="chat"></div>
-
-  <!-- Welcome -->
-  <div id="welcome">
-    <h1>Готов помочь!</h1>
-    <p>Задайте первый вопрос по ЛНА.</p>
-
-    <div class="input-wrapper welcome-wrapper">
-      <input type="text" id="welcome-input" placeholder="Введите сообщение..." autocomplete="off">
-      <button id="welcome-send" class="send-btn-icon">
-        <img src="/static/send.png" alt="send">
-      </button>
+  <div id="auth-overlay">
+    <div class="auth-card">
+      <h2>Вход</h2>
+      <p>Введите имя, чтобы увидеть сохранённые чаты.</p>
+      <input id="username-input" type="text" placeholder="Ваше имя" autocomplete="off" />
+      <button id="login-btn">Продолжить</button>
     </div>
   </div>
 
-  <!-- Нижний input -->
-  <div id="fixed-input">
-    <div class="input-wrapper">
-      <input type="text" id="message" placeholder="Введите сообщение..." autocomplete="off">
-      <button id="send-btn" class="send-btn-icon">
-        <img src="/static/send.png" alt="send">
-      </button>
-    </div>
+  <div id="layout">
+    <aside id="sidebar">
+      <div class="user-card">
+        <div class="pill">Онлайн</div>
+        <div class="user-name" id="sidebar-username">Гость</div>
+        <div class="user-meta" id="sidebar-meta">Нет входов</div>
+        <button id="new-chat">Новый чат</button>
+        <div class="history">
+          <div class="user-meta">История авторизаций</div>
+          <ul id="login-history"></ul>
+        </div>
+      </div>
+      <h3>Чаты</h3>
+      <div id="chat-list"></div>
+    </aside>
+
+    <main id="main-panel">
+
+      <div id="chat"></div>
+
+      <!-- Welcome -->
+      <div id="welcome">
+        <h1>Готов помочь!</h1>
+        <p>Задайте первый вопрос по ЛНА.</p>
+
+        <div class="input-wrapper welcome-wrapper">
+          <input type="text" id="welcome-input" placeholder="Введите сообщение..." autocomplete="off">
+          <button id="welcome-send" class="send-btn-icon">
+            <img src="/static/send.png" alt="send">
+          </button>
+        </div>
+      </div>
+
+      <!-- Нижний input -->
+      <div id="fixed-input">
+        <div class="input-wrapper">
+          <input type="text" id="message" placeholder="Введите сообщение..." autocomplete="off">
+          <button id="send-btn" class="send-btn-icon">
+            <img src="/static/send.png" alt="send">
+          </button>
+        </div>
+      </div>
+    </main>
   </div>
 
 
@@ -448,7 +680,7 @@
     });
 
 
-    /* ========= Chat Logic ========= */
+/* ========= Chat Logic ========= */
 
     const chatBox = document.getElementById("chat");
     const welcome = document.getElementById("welcome");
@@ -457,8 +689,21 @@
     const fixedInput = document.getElementById("fixed-input");
     const messageInput = document.getElementById("message");
     const sendBtn = document.getElementById("send-btn");
+    const authOverlay = document.getElementById("auth-overlay");
+    const usernameInput = document.getElementById("username-input");
+    const loginBtn = document.getElementById("login-btn");
+    const sidebarUsername = document.getElementById("sidebar-username");
+    const sidebarMeta = document.getElementById("sidebar-meta");
+    const loginHistoryList = document.getElementById("login-history");
+    const chatList = document.getElementById("chat-list");
+    const newChatBtn = document.getElementById("new-chat");
 
-    const USERNAME = "Пользователь";
+    const state = {
+      user: null,
+      chats: [],
+      currentChatId: null,
+      loginHistory: [],
+    };
 
     function renderMarkdown(text) {
       return DOMPurify.sanitize(marked.parse(text, { breaks: true }));
@@ -521,16 +766,113 @@
       });
     }
 
-    async function sendToServer(text) {
-      appendMessage("user", text);
+    function formatDate(ts) {
+      if (!ts) return "";
+      const d = new Date(ts);
+      return d.toLocaleString();
+    }
 
+    function toggleWelcome(show) {
+      welcome.style.display = show ? "flex" : "none";
+      fixedInput.style.display = show ? "none" : "block";
+    }
+
+    function renderLoginHistory(history) {
+      loginHistoryList.innerHTML = "";
+      if (!history.length) {
+        const li = document.createElement("li");
+        li.textContent = "Пока нет входов";
+        loginHistoryList.appendChild(li);
+        return;
+      }
+
+      history.slice(-10).reverse().forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = formatDate(entry.timestamp);
+        loginHistoryList.appendChild(li);
+      });
+    }
+
+    function renderChatList() {
+      chatList.innerHTML = "";
+      state.chats.forEach(chat => {
+        const item = document.createElement("div");
+        item.className = "chat-item" + (chat.id === state.currentChatId ? " active" : "");
+        item.addEventListener("click", () => selectChat(chat.id));
+
+        const title = document.createElement("div");
+        title.className = "chat-item-title";
+        title.textContent = chat.title;
+
+        const date = document.createElement("div");
+        date.className = "chat-item-date";
+        date.textContent = formatDate(chat.created_at);
+
+        item.appendChild(title);
+        item.appendChild(date);
+        chatList.appendChild(item);
+      });
+    }
+
+    function setUser(user, history) {
+      state.user = user;
+      state.loginHistory = history || [];
+      sidebarUsername.textContent = user.username;
+      sidebarMeta.textContent = `Всего входов: ${state.loginHistory.length}`;
+      renderLoginHistory(state.loginHistory);
+    }
+
+    async function loadMessages(chatId) {
+      chatBox.innerHTML = "";
+      try {
+        const res = await fetch(`/api/chats/${chatId}/messages`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (!data.length) {
+          toggleWelcome(true);
+          return;
+        }
+        toggleWelcome(false);
+        data.forEach(msg => {
+          appendMessage(msg.role === "ai" ? "ai" : "user", msg.text, { markdown: msg.role === "ai" });
+        });
+      } catch {
+        appendMessage("ai", "Не удалось загрузить сообщения.");
+      }
+    }
+
+    async function selectChat(chatId) {
+      state.currentChatId = chatId;
+      renderChatList();
+      await loadMessages(chatId);
+      messageInput.focus();
+    }
+
+    async function createChat(title = "Новый чат") {
+      if (!state.user) return null;
+      const res = await fetch("/api/chats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: state.user.id, title }),
+      });
+      if (!res.ok) throw new Error("Не удалось создать чат");
+      const chat = await res.json();
+      state.chats.unshift(chat);
+      renderChatList();
+      return chat;
+    }
+
+    async function sendToServer(text) {
+      if (!state.currentChatId) return;
+
+      appendMessage("user", text);
       const typingMsg = appendTyping();
 
       try {
-        const res = await fetch("/api/messages", {
+        const res = await fetch(`/api/chats/${state.currentChatId}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: USERNAME, text })
+          body: JSON.stringify({ username: state.user.username, text }),
         });
 
         if (!res.ok) throw new Error();
@@ -549,13 +891,17 @@
       }
     }
 
-    function sendFirst() {
+    async function sendFirst() {
       const txt = welcomeInput.value.trim();
       if (!txt) return welcomeInput.focus();
 
-      welcome.style.display = "none";
-      fixedInput.style.display = "block";
+      if (!state.currentChatId) {
+        const firstChat = await createChat(txt.slice(0, 40) || "Новый чат");
+        await selectChat(firstChat.id);
+      }
 
+      toggleWelcome(false);
+      welcomeInput.value = "";
       sendToServer(txt);
       messageInput.focus();
     }
@@ -564,9 +910,48 @@
       const txt = messageInput.value.trim();
       if (!txt) return messageInput.focus();
 
+      toggleWelcome(false);
       messageInput.value = "";
       sendToServer(txt);
       messageInput.focus();
+    }
+
+    async function handleLogin() {
+      const name = usernameInput.value.trim();
+      if (!name) return usernameInput.focus();
+
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: name }),
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setUser(data.user, data.login_history);
+        state.chats = data.chats || [];
+        renderChatList();
+        authOverlay.classList.add("hidden");
+        localStorage.setItem("webai_user", JSON.stringify(data.user));
+
+        if (!state.chats.length) {
+          const chat = await createChat("Новый чат");
+          await selectChat(chat.id);
+        } else {
+          await selectChat(state.chats[0].id);
+        }
+        welcomeInput.focus();
+      } catch (e) {
+        alert("Не удалось выполнить вход. Попробуйте позже.");
+      }
+    }
+
+    async function restoreSession() {
+      const stored = localStorage.getItem("webai_user");
+      if (!stored) return;
+      const user = JSON.parse(stored);
+      usernameInput.value = user.username;
+      await handleLogin();
     }
 
     welcomeSend.addEventListener("click", sendFirst);
@@ -575,7 +960,20 @@
     sendBtn.addEventListener("click", sendMessage);
     messageInput.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
 
-    window.addEventListener("load", () => welcomeInput.focus());
+    loginBtn.addEventListener("click", handleLogin);
+    usernameInput.addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+    newChatBtn.addEventListener("click", async () => {
+      if (!state.user) return;
+      const chat = await createChat("Новый чат");
+      await selectChat(chat.id);
+      toggleWelcome(true);
+      welcomeInput.focus();
+    });
+
+    window.addEventListener("load", () => {
+      usernameInput.focus();
+      restoreSession();
+    });
   </script>
 
 </body>

@@ -1,0 +1,109 @@
+{
+  "users": [
+    {
+      "id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "username": "Алексей",
+      "created_at": "2025-12-02T07:26:50.515776Z"
+    }
+  ],
+  "logins": [
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-02T07:26:50.515776Z"
+    },
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-02T07:34:38.966426Z"
+    },
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-02T07:40:29.356862Z"
+    }
+  ],
+  "chats": [
+    {
+      "id": "0fc9a2d5-c021-463e-8b51-be694e5b9776",
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "title": "Новый чат",
+      "created_at": "2025-12-02T07:26:50.539801Z"
+    },
+    {
+      "id": "b68406cb-41f9-4c0e-8e5e-b3f57ab2cf56",
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "title": "Новый чат",
+      "created_at": "2025-12-02T07:27:46.852325Z"
+    },
+    {
+      "id": "ac34e332-db79-41db-a2a4-8555b1640eed",
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "title": "Новый чат",
+      "created_at": "2025-12-02T07:40:46.165895Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "d4ecd1cc-628b-4f0e-b649-61b377be846f",
+      "chat_id": "0fc9a2d5-c021-463e-8b51-be694e5b9776",
+      "username": "Алексей",
+      "text": "Привет",
+      "role": "user",
+      "created_at": "2025-12-02T07:26:55.793619Z"
+    },
+    {
+      "id": "888fe702-4311-4400-9489-ec24861fcab1",
+      "chat_id": "0fc9a2d5-c021-463e-8b51-be694e5b9776",
+      "username": "Qwen3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-02T07:26:57.383295Z"
+    },
+    {
+      "id": "b3d325f6-1d48-41fc-8cd1-07c0614c3703",
+      "chat_id": "b68406cb-41f9-4c0e-8e5e-b3f57ab2cf56",
+      "username": "Алексей",
+      "text": "Напиши привет!",
+      "role": "user",
+      "created_at": "2025-12-02T07:28:00.077858Z"
+    },
+    {
+      "id": "531188ae-97ad-42af-9d77-4a0510e43e80",
+      "chat_id": "b68406cb-41f9-4c0e-8e5e-b3f57ab2cf56",
+      "username": "Qwen3",
+      "text": "Hello!",
+      "role": "ai",
+      "created_at": "2025-12-02T07:28:29.134401Z"
+    },
+    {
+      "id": "2abc32c4-e552-432c-b3be-ed46e041466e",
+      "chat_id": "b68406cb-41f9-4c0e-8e5e-b3f57ab2cf56",
+      "username": "Алексей",
+      "text": "Кто ты?",
+      "role": "user",
+      "created_at": "2025-12-02T07:28:36.134582Z"
+    },
+    {
+      "id": "9534890d-596b-45c3-a1a4-1b7fd99da7f5",
+      "chat_id": "b68406cb-41f9-4c0e-8e5e-b3f57ab2cf56",
+      "username": "Qwen3",
+      "text": "Я Куэн, большой языковой модель, разработанный Лабораторией Тонги. Я могу помочь вам с различными задачами, такими как ответы на вопросы, написание текстов и т.д. Как я могу вам помочь?",
+      "role": "ai",
+      "created_at": "2025-12-02T07:29:28.923408Z"
+    },
+    {
+      "id": "84e62c2b-436a-432f-ac88-ab1deca6ab14",
+      "chat_id": "ac34e332-db79-41db-a2a4-8555b1640eed",
+      "username": "Алексей",
+      "text": "a",
+      "role": "user",
+      "created_at": "2025-12-02T07:40:56.265242Z"
+    },
+    {
+      "id": "0ff5621e-08a0-4b5f-86b7-a41adc756b53",
+      "chat_id": "ac34e332-db79-41db-a2a4-8555b1640eed",
+      "username": "Qwen3",
+      "text": "It seems there might be a formatting or input error. Could you please clarify your question so I can assist you better?",
+      "role": "ai",
+      "created_at": "2025-12-02T07:41:27.948571Z"
+    }
+  ]
+}
