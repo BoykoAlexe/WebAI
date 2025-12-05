@@ -48,7 +48,57 @@
       min-height: 100vh;
       color: var(--text);
       transition: background 0.35s ease, color 0.35s ease;
-      overflow-x: hidden;
+      overflow: hidden;
+    }
+
+    /* Scrollbars */
+    body,
+    #sidebar,
+    #chat-list,
+    #main-panel {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 50, 116, 0.3) rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] body,
+    [data-theme="dark"] #sidebar,
+    [data-theme="dark"] #chat-list,
+    [data-theme="dark"] #main-panel {
+      scrollbar-color: rgba(153, 199, 255, 0.5) rgba(255, 255, 255, 0.05);
+    }
+
+    body::-webkit-scrollbar,
+    #sidebar::-webkit-scrollbar,
+    #chat-list::-webkit-scrollbar,
+    #main-panel::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    body::-webkit-scrollbar-track,
+    #sidebar::-webkit-scrollbar-track,
+    #chat-list::-webkit-scrollbar-track,
+    #main-panel::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, rgba(0, 83, 179, 0.04), transparent);
+      border-radius: 999px;
+    }
+
+    body::-webkit-scrollbar-thumb,
+    #sidebar::-webkit-scrollbar-thumb,
+    #chat-list::-webkit-scrollbar-thumb,
+    #main-panel::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #0054b3, #3399ff);
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.65);
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.12);
+    }
+
+    [data-theme="dark"] body::-webkit-scrollbar-thumb,
+    [data-theme="dark"] #sidebar::-webkit-scrollbar-thumb,
+    [data-theme="dark"] #chat-list::-webkit-scrollbar-thumb,
+    [data-theme="dark"] #main-panel::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #122035, #1f2f4b);
+      border: 2px solid rgba(0,0,0,0.25);
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.35);
     }
 
     /* === SWITCHER === */
@@ -146,7 +196,7 @@
     #layout {
       display: grid;
       grid-template-columns: 280px 1fr;
-      min-height: 100vh;
+      height: 100vh;
       position: relative;
       z-index: 1;
       transition: grid-template-columns 0.3s ease;
@@ -173,6 +223,8 @@
       background: rgba(255,255,255,0.7);
       border-right: 1px solid rgba(0,0,0,0.06);
       transition: transform 0.3s ease, opacity 0.3s ease;
+      height: 100vh;
+      overflow-y: auto;
     }
 
     #layout.collapsed #sidebar {
@@ -261,10 +313,37 @@
       border-color: rgba(255,255,255,0.06);
     }
 
+    .user-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0054b3, #3399ff);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 8px 16px rgba(0,80,180,0.18);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    [data-theme="dark"] .avatar {
+      background: linear-gradient(135deg, #1f2937, #111827);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.45);
+    }
+
     .user-name {
       font-weight: 700;
       font-size: 16px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .user-meta {
@@ -288,6 +367,35 @@
     [data-theme="dark"] .pill {
       background: rgba(120,170,255,0.12);
       color: #99c7ff;
+    }
+
+    .logout-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    #logout-btn {
+      border: none;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      flex-shrink: 0;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    #logout-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,0,0,0.12); }
+
+    [data-theme="dark"] #logout-btn {
+      background: rgba(31,41,55,0.9);
+      color: #e8ecf7;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.45);
     }
 
     #new-chat {
@@ -345,6 +453,9 @@
     #main-panel {
       position: relative;
       padding: 0;
+      height: 100vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
     }
 
     #chat {
@@ -390,7 +501,7 @@
 
     /* Welcome */
     #welcome {
-      position: fixed;
+      position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
@@ -753,10 +864,19 @@
         <span class="sr-only">Скрыть панель</span>
       </button>
       <div class="user-card">
+        <div class="user-top">
+          <div class="avatar" id="sidebar-avatar">G</div>
+          <div>
+            <div class="user-name" id="sidebar-username">Гость</div>
+            <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
+          </div>
+        </div>
         <div class="pill">Онлайн</div>
-        <div class="user-name" id="sidebar-username">Гость</div>
-        <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
         <button id="new-chat">Новый чат</button>
+        <div class="logout-row">
+          <span class="user-meta">Управление профилем</span>
+          <button id="logout-btn" type="button">Выйти</button>
+        </div>
       </div>
       <h3>Чаты</h3>
       <div id="chat-list"></div>
@@ -801,11 +921,10 @@
     const themeToggle = document.getElementById("theme-toggle");
     const thumb = document.getElementById("toggle-thumb");
 
-    // Load saved
     const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }
+    const savedUser = localStorage.getItem("session_user");
+    const initialTheme = savedUser && savedTheme ? savedTheme : "light";
+    document.documentElement.setAttribute("data-theme", initialTheme);
 
     themeToggle.addEventListener("click", () => {
       const isDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -832,11 +951,14 @@
     const authDescription = document.getElementById("auth-description");
     const sidebarUsername = document.getElementById("sidebar-username");
     const sidebarMeta = document.getElementById("sidebar-meta");
+    const sidebarAvatar = document.getElementById("sidebar-avatar");
+    const logoutBtn = document.getElementById("logout-btn");
     const chatList = document.getElementById("chat-list");
     const newChatBtn = document.getElementById("new-chat");
     const layout = document.getElementById("layout");
     const sidebarToggle = document.getElementById("sidebar-toggle");
     const sidebarHideBtn = document.getElementById("sidebar-hide");
+    const mainPanel = document.getElementById("main-panel");
 
     const state = {
       user: null,
@@ -865,8 +987,7 @@
       bubble.appendChild(span);
       msg.appendChild(bubble);
       chatBox.appendChild(msg);
-
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
       return span;
     }
 
@@ -884,7 +1005,7 @@
 
       msg.appendChild(bubble);
       chatBox.appendChild(msg);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
 
       return msg;
     }
@@ -896,7 +1017,7 @@
           if (i < fullText.length) {
             element.textContent = fullText.substring(0, i + 1);
             i++;
-            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
           } else {
             clearInterval(timer);
 
@@ -943,6 +1064,16 @@
       updateSidebarControls();
     }
 
+    function persistSession(user) {
+      if (user) {
+        localStorage.setItem("session_user", JSON.stringify(user));
+      }
+    }
+
+    function clearSession() {
+      localStorage.removeItem("session_user");
+    }
+
     function updateSidebarMeta(user) {
       if (!user) {
         sidebarMeta.textContent = "Авторизуйтесь, чтобы начать.";
@@ -975,10 +1106,18 @@
       });
     }
 
-    function setUser(user) {
+  function setUser(user) {
       state.user = user;
-      sidebarUsername.textContent = user.username;
-      updateSidebarMeta(user);
+      if (user) {
+        sidebarUsername.textContent = user.username;
+        sidebarAvatar.textContent = (user.username || "").slice(0, 1).toUpperCase() || "?";
+        updateSidebarMeta(user);
+        persistSession(user);
+      } else {
+        sidebarUsername.textContent = "Гость";
+        sidebarMeta.textContent = "Авторизуйтесь, чтобы начать.";
+        sidebarAvatar.textContent = "G";
+      }
     }
 
     async function loadMessages(chatId) {
@@ -1155,11 +1294,48 @@
       }
     }
 
-    function restoreSession() {
+    async function restoreSession() {
+      const storedUser = localStorage.getItem("session_user");
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          setUser(parsed);
+          authOverlay.classList.add("hidden");
+          const res = await fetch(`/api/chats?user_id=${encodeURIComponent(parsed.id)}`);
+          state.chats = res.ok ? await res.json() : [];
+          state.currentChatId = null;
+          renderChatList();
+          if (state.chats.length) {
+            await selectChat(state.chats[0].id);
+            toggleWelcome(false);
+          } else {
+            toggleWelcome(true);
+          }
+          return;
+        } catch (err) {
+          clearSession();
+        }
+      }
+
       const storedName = localStorage.getItem("last_username");
       if (storedName) {
         usernameInput.value = storedName;
       }
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+
+    function handleLogout() {
+      clearSession();
+      setUser(null);
+      state.chats = [];
+      state.currentChatId = null;
+      chatBox.innerHTML = "";
+      renderChatList();
+      toggleWelcome(true);
+      authOverlay.classList.remove("hidden");
+      setAuthMode("login");
+      usernameInput.focus();
+      document.documentElement.setAttribute("data-theme", "light");
     }
 
     welcomeSend.addEventListener("click", sendFirst);
@@ -1177,6 +1353,9 @@
       passwordInput.value = "";
       usernameInput.focus();
     });
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", handleLogout);
+    }
     newChatBtn.addEventListener("click", async () => {
       if (!state.user) return;
       const chat = await createChat("Новый чат");
