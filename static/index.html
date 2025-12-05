@@ -167,7 +167,8 @@
     }
 
     #sidebar {
-      padding: 20px 16px 140px;
+      position: relative;
+      padding: 56px 16px 140px;
       backdrop-filter: blur(8px);
       background: rgba(255,255,255,0.7);
       border-right: 1px solid rgba(0,0,0,0.06);
@@ -183,6 +184,32 @@
     [data-theme="dark"] #sidebar {
       background: rgba(15,23,42,0.75);
       border-color: rgba(255,255,255,0.06);
+    }
+
+    #sidebar-hide {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      color: var(--text);
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    #sidebar-hide:hover { transform: translateY(-1px); }
+
+    [data-theme="dark"] #sidebar-hide {
+      background: rgba(17,24,39,0.92);
+      color: #e5e7eb;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.45);
     }
 
     #sidebar-toggle {
@@ -721,6 +748,10 @@
 
   <div id="layout">
     <aside id="sidebar">
+      <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
+        <span aria-hidden="true">×</span>
+        <span class="sr-only">Скрыть панель</span>
+      </button>
       <div class="user-card">
         <div class="pill">Онлайн</div>
         <div class="user-name" id="sidebar-username">Гость</div>
@@ -805,6 +836,7 @@
     const newChatBtn = document.getElementById("new-chat");
     const layout = document.getElementById("layout");
     const sidebarToggle = document.getElementById("sidebar-toggle");
+    const sidebarHideBtn = document.getElementById("sidebar-hide");
 
     const state = {
       user: null,
@@ -886,12 +918,29 @@
       fixedInput.style.display = show ? "none" : "block";
     }
 
-    function updateSidebarToggleLabel() {
+    function updateSidebarControls() {
       const label = state.sidebarCollapsed ? "Показать панель" : "Скрыть панель";
       sidebarToggle.setAttribute("aria-label", label);
       sidebarToggle.title = label;
       const srText = sidebarToggle.querySelector(".sr-only");
       if (srText) srText.textContent = label;
+
+      sidebarToggle.style.display = state.sidebarCollapsed ? "inline-flex" : "none";
+
+      if (sidebarHideBtn) {
+        const hideLabel = "Скрыть панель";
+        sidebarHideBtn.setAttribute("aria-label", hideLabel);
+        sidebarHideBtn.title = hideLabel;
+        const srHideText = sidebarHideBtn.querySelector(".sr-only");
+        if (srHideText) srHideText.textContent = hideLabel;
+        sidebarHideBtn.style.display = state.sidebarCollapsed ? "none" : "inline-flex";
+      }
+    }
+
+    function setSidebarCollapsed(collapsed) {
+      state.sidebarCollapsed = collapsed;
+      layout.classList.toggle("collapsed", collapsed);
+      updateSidebarControls();
     }
 
     function updateSidebarMeta(user) {
@@ -1121,16 +1170,18 @@
     });
 
     sidebarToggle.addEventListener("click", () => {
-      state.sidebarCollapsed = !state.sidebarCollapsed;
-      layout.classList.toggle("collapsed", state.sidebarCollapsed);
-      updateSidebarToggleLabel();
+      setSidebarCollapsed(!state.sidebarCollapsed);
     });
+
+    if (sidebarHideBtn) {
+      sidebarHideBtn.addEventListener("click", () => setSidebarCollapsed(true));
+    }
 
     window.addEventListener("load", () => {
       usernameInput.focus();
       setAuthMode("login");
       restoreSession();
-      updateSidebarToggleLabel();
+      setSidebarCollapsed(state.sidebarCollapsed);
     });
   </script>
 

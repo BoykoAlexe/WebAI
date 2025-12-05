@@ -17,7 +17,7 @@ from langchain_ollama.llms import OllamaLLM
 
 router = APIRouter()
 
-MODEL_NAME = "qwen3:8b"
+MODEL_NAME = "gemma3:1b"
 AI_NAME = MODEL_NAME.split(":")[0].title()
 
 
