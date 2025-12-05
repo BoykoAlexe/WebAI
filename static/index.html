@@ -306,6 +306,9 @@
       padding: 14px 12px;
       margin-bottom: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 60px;
+      z-index: 2;
     }
 
     [data-theme="dark"] .user-card {
@@ -762,6 +765,17 @@
       text-align: center;
     }
 
+    .auth-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .auth-logo img {
+      max-width: 160px;
+      height: auto;
+    }
+
     [data-theme="dark"] .auth-card {
       background: #1f2937;
       color: #e8ecf7;
@@ -771,14 +785,8 @@
     .auth-card h2 { margin-bottom: 10px; }
     .auth-card p { color: var(--muted); margin-bottom: 16px; }
 
-    #username-input {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid #e2e8f0;
-      margin-bottom: 12px;
-    }
-
+    #name-input,
+    #username-input,
     #password-input {
       width: 100%;
       padding: 12px 14px;
@@ -787,16 +795,16 @@
       margin-bottom: 12px;
     }
 
-    [data-theme="dark"] #username-input {
+    [data-theme="dark"] #name-input,
+    [data-theme="dark"] #username-input,
+    [data-theme="dark"] #password-input {
       background: #111827;
       border-color: #2c3548;
       color: var(--text);
     }
 
-    [data-theme="dark"] #password-input {
-      background: #111827;
-      border-color: #2c3548;
-      color: var(--text);
+    .auth-field.hidden-field {
+      display: none;
     }
 
     #login-btn {
@@ -845,9 +853,13 @@
 
   <div id="auth-overlay">
     <div class="auth-card">
+      <div class="auth-logo">
+        <img src="/static/offi_logo.png" alt="Offi логотип">
+      </div>
       <h2 id="auth-title">Вход</h2>
-      <p id="auth-description">Введите имя пользователя и пароль.</p>
-      <input id="username-input" type="text" placeholder="Имя пользователя" autocomplete="off" />
+      <p id="auth-description">Введите логин и пароль.</p>
+      <input id="name-input" class="auth-field hidden-field" type="text" placeholder="Имя" autocomplete="name" />
+      <input id="username-input" type="text" placeholder="Логин" autocomplete="off" />
       <input id="password-input" type="password" placeholder="Пароль" autocomplete="current-password" />
       <button id="login-btn">Войти</button>
       <div class="auth-switch">
@@ -943,6 +955,7 @@
     const messageInput = document.getElementById("message");
     const sendBtn = document.getElementById("send-btn");
     const authOverlay = document.getElementById("auth-overlay");
+    const nameInput = document.getElementById("name-input");
     const usernameInput = document.getElementById("username-input");
     const passwordInput = document.getElementById("password-input");
     const loginBtn = document.getElementById("login-btn");
@@ -1109,8 +1122,9 @@
   function setUser(user) {
       state.user = user;
       if (user) {
-        sidebarUsername.textContent = user.username;
-        sidebarAvatar.textContent = (user.username || "").slice(0, 1).toUpperCase() || "?";
+        const displayName = (user.name && user.name.trim()) || user.username;
+        sidebarUsername.textContent = displayName;
+        sidebarAvatar.textContent = (displayName || "").slice(0, 1).toUpperCase() || "?";
         updateSidebarMeta(user);
         persistSession(user);
       } else {
@@ -1245,25 +1259,35 @@
       const isLogin = mode === "login";
       authTitle.textContent = isLogin ? "Вход" : "Регистрация";
       authDescription.textContent = isLogin
-        ? "Введите имя пользователя и пароль."
-        : "Создайте новый аккаунт, указав имя и пароль.";
+        ? "Введите логин и пароль."
+        : "Укажите имя, логин и пароль для регистрации.";
       loginBtn.textContent = isLogin ? "Войти" : "Зарегистрироваться";
       switchAuthBtn.textContent = isLogin ? "Зарегистрироваться" : "У меня уже есть аккаунт";
+      nameInput.classList.toggle("hidden-field", isLogin);
+      if (isLogin) {
+        nameInput.value = "";
+      }
     }
 
     async function handleAuth() {
+      const fullName = nameInput.value.trim();
       const name = usernameInput.value.trim();
       const password = passwordInput.value.trim();
+      const isLogin = state.authMode === "login";
       if (!name) return usernameInput.focus();
+      if (!isLogin && !fullName) return nameInput.focus();
       if (!password) return passwordInput.focus();
 
-      const endpoint = state.authMode === "login" ? "/api/login" : "/api/register";
+      const endpoint = isLogin ? "/api/login" : "/api/register";
 
       try {
+        const payload = isLogin
+          ? { username: name, password }
+          : { username: name, password, name: fullName };
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: name, password }),
+          body: JSON.stringify(payload),
         });
 
         if (!res.ok) {
@@ -1280,6 +1304,7 @@
         authOverlay.classList.add("hidden");
         localStorage.setItem("last_username", name);
         passwordInput.value = "";
+        nameInput.value = "";
 
         if (!state.chats.length) {
           const chat = await createChat("Новый чат");
@@ -1351,7 +1376,8 @@
       const nextMode = state.authMode === "login" ? "register" : "login";
       setAuthMode(nextMode);
       passwordInput.value = "";
-      usernameInput.focus();
+      const focusTarget = nextMode === "login" ? usernameInput : nameInput;
+      focusTarget.focus();
     });
     if (logoutBtn) {
       logoutBtn.addEventListener("click", handleLogout);

@@ -45,7 +45,7 @@ async def get_chat_page():
 @router.post("/api/register")
 async def register(payload: RegisterRequest):
     try:
-        user = register_user(payload.username, payload.password)
+        user = register_user(payload.username, payload.password, payload.name)
     except ValueError as exc:  # pragma: no cover - ValueError used for validation
         raise HTTPException(status_code=400, detail=str(exc))
 

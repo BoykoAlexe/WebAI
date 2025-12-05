@@ -70,9 +70,11 @@ def get_or_create_user(username: str) -> Dict:
     return _public_user(user)
 
 
-def register_user(username: str, password: str) -> Dict:
+def register_user(username: str, password: str, name: str) -> Dict:
     if not username.strip():
         raise ValueError("Имя пользователя не может быть пустым")
+    if not name.strip():
+        raise ValueError("Имя не может быть пустым")
     if not password:
         raise ValueError("Пароль не может быть пустым")
 
@@ -83,12 +85,14 @@ def register_user(username: str, password: str) -> Dict:
     # Разрешаем задать пароль для пользователя из старых данных без пароля
     if existing and not existing.get("password_hash"):
         existing["password_hash"] = _hash_password(password)
+        existing["name"] = name
         _save_data(_data)
         return _public_user(existing)
 
     user = {
         "id": str(uuid.uuid4()),
         "username": username,
+        "name": name,
         "password_hash": _hash_password(password),
         "created_at": _now_iso(),
     }

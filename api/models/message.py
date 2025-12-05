@@ -13,6 +13,7 @@ class LoginRequest(BaseModel):
 
 class RegisterRequest(BaseModel):
     username: str
+    name: str
     password: str
 
 
