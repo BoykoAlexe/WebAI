@@ -443,7 +443,7 @@
     }
 
     [data-theme="dark"] .action-btn .action-icon {
-      filter: brightness(1.9) drop-shadow(0 2px 6px rgba(0,0,0,0.55));
+      filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,0.55));
     }
 
     [data-theme="dark"] .input-icon {
@@ -1663,7 +1663,7 @@
       const saveBtn = document.createElement("button");
       saveBtn.type = "button";
       saveBtn.className = "save-edit";
-      saveBtn.textContent = "Сохранить";
+      saveBtn.textContent = "Отправить";
       saveBtn.addEventListener("click", () => {
         const updated = textarea.value.trim();
         if (!updated) return textarea.focus();
