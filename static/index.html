@@ -833,6 +833,15 @@
       width: fit-content;
     }
 
+    .message.ai .message-actions {
+      justify-content: flex-start;
+    }
+
+    .message.user .message-actions {
+      justify-content: flex-end;
+      margin-left: auto;
+    }
+
     .message-action-btn {
       width: 30px;
       height: 30px;
@@ -1300,14 +1309,6 @@
           <button id="send-btn" class="send-btn-icon">
             <img src="/static/send.png" alt="send">
           </button>
-        </div>
-        <div class="input-meta" id="edit-hint">
-          <span>Хотите изменить последнее сообщение?</span>
-          <button id="edit-last-btn" type="button">Редактировать</button>
-        </div>
-        <div class="input-meta hidden" id="edit-meta">
-          <span id="edit-label">Редактирование последнего сообщения</span>
-          <button id="cancel-edit" type="button">Отменить</button>
         </div>
       </div>
     </main>
