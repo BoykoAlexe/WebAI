@@ -242,45 +242,68 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      border: none;
-      background: rgba(255,255,255,0.9);
-      color: var(--text);
-      border-radius: 10px;
-      width: 40px;
-      height: 40px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+
+      background: none;   /* ← без фона */
+      border: none;       /* ← без рамки */
+      padding: 0;
+
+      width: auto;
+      height: auto;
+
+      box-shadow: none;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    #sidebar-hide img.icon-close {
+      width: 26px;
+      height: 26px;
+
+      opacity: 0.9;
+      transition: opacity .2s;
+    }
+
+    #sidebar-hide:hover img.icon-close {
+      opacity: 1;
     }
 
     #sidebar-hide:hover { transform: translateY(-1px); }
 
     [data-theme="dark"] #sidebar-hide {
-      background: rgba(17,24,39,0.92);
-      color: #e5e7eb;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.45);
+      background: none !important;
+      box-shadow: none !important;
+      color: #e5e7eb; /* можно оставить или удалить, не мешает */
     }
 
     #sidebar-toggle {
       position: fixed;
-      top: 16px;
-      left: 16px;
+      top: 24px;
+      left: 24px;
       z-index: 25;
-      border: none;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px;
-      width: 44px;
-      height: 44px;
+
+      background: none;    /* ← убираем фон */
+      border: none;        /* ← убираем рамку */
       padding: 0;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+
+      width: auto;         /* кнопка под размер иконки */
+      height: auto;
+
+      box-shadow: none;    /* ← убираем тень */
+      cursor: pointer;
+
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    #sidebar-toggle img.icon-menu {
+      width: 20px;   /* было 26 */
+      height: 20px;  /* было 26 */
+      opacity: 0.9;
+      transition: opacity .2s;
+    }
+
+    #sidebar-toggle:hover img.icon-menu {
+      opacity: 1;
     }
 
     #sidebar-toggle:hover { transform: translateY(-2px); }
@@ -307,7 +330,7 @@
       margin-bottom: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.06);
       position: sticky;
-      top: 60px;
+      top: 6px;
       z-index: 2;
     }
 
@@ -612,6 +635,16 @@
       opacity: 0.4;
       animation: blink 1.4s infinite ease-in-out both;
     }
+    /* Иконка menu.png в тёмной теме — делаем белой */
+    [data-theme="dark"] #sidebar-toggle img.icon-menu {
+      filter: brightness(0) invert(1);
+    }
+
+    /* Иконка close.svg в тёмной теме — делаем белой */
+    [data-theme="dark"] #sidebar-hide img.icon-close {
+      filter: brightness(0) invert(1);
+    }
+
 
     .typing-dots div:nth-child(2) { animation-delay: 0.2s; }
     .typing-dots div:nth-child(3) { animation-delay: 0.4s; }
@@ -718,7 +751,13 @@
       width: 18px;
       height: 14px;
     }
-
+    /* Отключаем старую гамбургер-иконку */
+    .sidebar-icon,
+    .sidebar-icon span,
+    .sidebar-icon::before,
+    .sidebar-icon::after {
+      display: none !important;
+    }
     .sidebar-icon span,
     .sidebar-icon::before,
     .sidebar-icon::after {
@@ -833,6 +872,18 @@
       font-weight: 600;
       margin-left: 6px;
     }
+    #sidebar-hide img.icon-close {
+      transform: scaleX(-1);
+      width: 22px;
+      height: 22px;
+      opacity: 0.6;        /* полупрозрачность */
+      transition: opacity 0.25s ease;
+    }
+
+    #sidebar-hide:hover img.icon-close {
+      opacity: 1;
+    }
+
 
   </style>
 </head>
@@ -846,9 +897,9 @@
 
   <div class="glow"></div>
 
-    <button id="sidebar-toggle" aria-label="Скрыть панель" title="Скрыть панель">
-    <span class="sidebar-icon" aria-hidden="true"><span></span></span>
-    <span class="sr-only">Скрыть панель</span>
+  <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
+    <img src="/static/menu.png" alt="" class="icon-menu">
+    <span class="sr-only">Показать панель</span>
   </button>
 
   <div id="auth-overlay">
@@ -872,7 +923,7 @@
   <div id="layout">
     <aside id="sidebar">
       <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
-        <span aria-hidden="true">×</span>
+        <img src="/static/close.svg" alt="" class="icon-close">
         <span class="sr-only">Скрыть панель</span>
       </button>
       <div class="user-card">
@@ -1403,7 +1454,8 @@
       usernameInput.focus();
       setAuthMode("login");
       restoreSession();
-      setSidebarCollapsed(state.sidebarCollapsed);
+      state.sidebarCollapsed = true;
+      setSidebarCollapsed(true);
     });
   </script>
 
