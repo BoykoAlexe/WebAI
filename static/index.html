@@ -943,8 +943,8 @@
       align-items: center;
       justify-content: center;
       padding: 6px;
-      background: rgba(0, 83, 179, 0.08);
-      border: 1px solid rgba(0, 83, 179, 0.12);
+      background: transparent;
+      border: none;
       border-radius: 10px;
       color: var(--text);
       cursor: pointer;
@@ -959,13 +959,13 @@
     }
 
     .message-action-btn:hover {
-      background: rgba(0, 83, 179, 0.15);
-      box-shadow: 0 6px 12px rgba(0, 83, 179, 0.15);
+      color: var(--accent);
+      transform: translateY(-1px);
     }
 
     .message-action-btn.is-success {
-      background: rgba(0, 160, 80, 0.12);
-      border-color: rgba(0, 160, 80, 0.2);
+      background: transparent;
+      border: none;
       color: #1f9d58;
     }
 
