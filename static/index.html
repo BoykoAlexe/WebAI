@@ -197,6 +197,7 @@
       display: grid;
       grid-template-columns: 280px 1fr;
       height: 100vh;
+      min-height: 0;
       position: relative;
       z-index: 1;
       transition: grid-template-columns 0.3s ease;
@@ -224,6 +225,7 @@
       border-right: 1px solid rgba(0,0,0,0.06);
       transition: transform 0.3s ease, opacity 0.3s ease;
       height: 100vh;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -446,7 +448,8 @@
       gap: 8px;
       overflow-y: auto;
       padding-right: 6px;
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       padding-bottom: 12px;
     }
 
@@ -595,9 +598,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
 
     .send-btn-icon img { width: 22px; pointer-events: none; }
+
+    .send-btn-icon.is-sending {
+      background: linear-gradient(135deg, #0054b3, #3399ff);
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0,83,179,0.2);
+    }
+
+    .send-btn-icon.is-sending img { display: none; }
+
+    .send-btn-icon.is-sending::before {
+      content: "";
+      display: block;
+      width: 14px;
+      height: 14px;
+      background: white;
+      border-radius: 4px;
+    }
 
     #fixed-input {
       position: fixed;
@@ -1039,10 +1060,27 @@
       authMode: "login",
       sidebarCollapsed: false,
       pendingChat: false,
+      isSending: false,
+      pendingRequest: null,
     };
 
     function setAuthenticated(isAuthenticated) {
       document.body.classList.toggle("auth-locked", !isAuthenticated);
+    }
+
+    function setSendState(isSending) {
+      state.isSending = isSending;
+      sendBtn.classList.toggle("is-sending", isSending);
+      const label = isSending ? "Остановить ответ" : "Отправить сообщение";
+      sendBtn.setAttribute("aria-label", label);
+      sendBtn.title = label;
+    }
+
+    function cancelPendingRequest() {
+      if (state.pendingRequest) {
+        state.pendingRequest.abort();
+        state.pendingRequest = null;
+      }
     }
 
     function renderMarkdown(text) {
@@ -1270,11 +1308,17 @@
       appendMessage("user", text);
       const typingMsg = appendTyping();
 
+      cancelPendingRequest();
+      const controller = new AbortController();
+      state.pendingRequest = controller;
+      setSendState(true);
+
       try {
         const res = await fetch(`/api/chats/${chatId}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: state.user.username, text }),
+          signal: controller.signal,
         });
 
         if (!res.ok) {
@@ -1311,14 +1355,25 @@
         if (typingMsg.isConnected) {
           typingMsg.remove();
         }
-        const fallback = err?.message && err.message !== "Failed to fetch"
-          ? err.message
-          : "Ошибка соединения с сервером.";
-        appendMessage("ai", fallback);
+        if (err.name === "AbortError") {
+          appendMessage("ai", "Ответ остановлен.");
+        } else {
+          const fallback = err?.message && err.message !== "Failed to fetch"
+            ? err.message
+            : "Ошибка соединения с сервером.";
+          appendMessage("ai", fallback);
+        }
+      } finally {
+        if (state.pendingRequest === controller) {
+          state.pendingRequest = null;
+        }
+        setSendState(false);
       }
     }
 
     async function sendFirst() {
+      if (state.isSending) return;
+
       const txt = welcomeInput.value.trim();
       if (!txt) return welcomeInput.focus();
 
@@ -1333,6 +1388,8 @@
     }
 
     function sendMessage() {
+      if (state.isSending) return;
+
       const txt = messageInput.value.trim();
       if (!txt) return messageInput.focus();
 
@@ -1461,7 +1518,13 @@
     welcomeSend.addEventListener("click", sendFirst);
     welcomeInput.addEventListener("keydown", e => { if (e.key === "Enter") sendFirst(); });
 
-    sendBtn.addEventListener("click", sendMessage);
+    sendBtn.addEventListener("click", () => {
+      if (state.isSending) {
+        cancelPendingRequest();
+      } else {
+        sendMessage();
+      }
+    });
     messageInput.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
 
     loginBtn.addEventListener("click", handleAuth);
