@@ -718,6 +718,10 @@
       width: 100%;
     }
 
+    .input-wrapper.has-attachments input {
+      padding-left: 54px;
+    }
+
     .welcome-wrapper {
       max-width: 720px;
       margin: 0 auto;
@@ -780,6 +784,96 @@
       align-items: center;
       justify-content: center;
       transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .attach-btn {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 83, 179, 0.12);
+      background: linear-gradient(135deg, rgba(0, 83, 179, 0.08), rgba(51, 153, 255, 0.08));
+      color: var(--accent);
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(0, 83, 179, 0.12);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .attach-btn:hover {
+      transform: translateY(-50%) scale(1.04);
+      box-shadow: 0 10px 20px rgba(0, 83, 179, 0.18);
+      border-color: rgba(0, 83, 179, 0.32);
+    }
+
+    [data-theme="dark"] .attach-btn {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.08));
+      border-color: rgba(255, 255, 255, 0.08);
+      color: #a7c5ff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="dark"] .attach-btn:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .attachment-list {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .attachment-list.hidden { display: none; }
+
+    .attachment-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(0, 83, 179, 0.08);
+      border: 1px solid rgba(0, 83, 179, 0.16);
+      color: var(--text);
+      box-shadow: 0 8px 16px rgba(0, 83, 179, 0.1);
+    }
+
+    [data-theme="dark"] .attachment-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .attachment-name {
+      font-weight: 600;
+    }
+
+    .attachment-size {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .remove-attachment {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+
+    .remove-attachment:hover {
+      color: #ef4444;
+      transform: scale(1.08);
     }
 
     .send-btn-icon img { width: 22px; pointer-events: none; }
@@ -1304,12 +1398,15 @@
 
       <!-- Нижний input -->
       <div id="fixed-input">
-        <div class="input-wrapper">
+        <div class="input-wrapper has-attachments">
+          <button id="upload-btn" class="attach-btn" type="button" aria-label="Прикрепить файл" title="Прикрепить файл">+</button>
+          <input type="file" id="file-input" class="sr-only" multiple>
           <input type="text" id="message" placeholder="Введите сообщение..." autocomplete="off">
           <button id="send-btn" class="send-btn-icon">
             <img src="/static/send.png" alt="send">
           </button>
         </div>
+        <div id="attachment-list" class="attachment-list hidden" aria-live="polite"></div>
       </div>
     </main>
   </div>
@@ -1345,6 +1442,9 @@
     const fixedInput = document.getElementById("fixed-input");
     const messageInput = document.getElementById("message");
     const sendBtn = document.getElementById("send-btn");
+    const uploadBtn = document.getElementById("upload-btn");
+    const fileInput = document.getElementById("file-input");
+    const attachmentList = document.getElementById("attachment-list");
     const authOverlay = document.getElementById("auth-overlay");
     const nameInput = document.getElementById("name-input");
     const usernameInput = document.getElementById("username-input");
@@ -1386,6 +1486,72 @@
       editing: false,
       editTarget: null,
     };
+
+    const attachments = [];
+
+    function formatFileSize(bytes) {
+      if (!bytes) return "0 Б";
+      const units = ["Б", "КБ", "МБ", "ГБ"];
+      const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+      const size = bytes / 1024 ** exponent;
+      return `${size.toFixed(size >= 10 || exponent === 0 ? 0 : 1)} ${units[exponent]}`;
+    }
+
+    function renderAttachments() {
+      if (!attachmentList) return;
+      attachmentList.innerHTML = "";
+
+      if (!attachments.length) {
+        attachmentList.classList.add("hidden");
+        return;
+      }
+
+      attachmentList.classList.remove("hidden");
+
+      attachments.forEach((file, idx) => {
+        const pill = document.createElement("div");
+        pill.className = "attachment-pill";
+
+        const name = document.createElement("span");
+        name.className = "attachment-name";
+        name.textContent = file.name;
+
+        const size = document.createElement("span");
+        size.className = "attachment-size";
+        size.textContent = formatFileSize(file.size);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "remove-attachment";
+        removeBtn.setAttribute("aria-label", `Убрать ${file.name}`);
+        removeBtn.innerHTML = "&times;";
+        removeBtn.addEventListener("click", () => {
+          attachments.splice(idx, 1);
+          renderAttachments();
+        });
+
+        pill.append(name, size, removeBtn);
+        attachmentList.appendChild(pill);
+      });
+    }
+
+    function addAttachments(files) {
+      if (!files?.length) return;
+      attachments.push(...files);
+      renderAttachments();
+    }
+
+    function clearAttachments() {
+      attachments.length = 0;
+      renderAttachments();
+    }
+
+    function buildMessageWithAttachments(text) {
+      if (!attachments.length) return text;
+
+      const attachmentLines = attachments.map(file => `- ${file.name} (${formatFileSize(file.size)})`);
+      return [text, "Вложения:", ...attachmentLines].filter(Boolean).join("\n");
+    }
 
     function setAuthenticated(isAuthenticated) {
       document.body.classList.toggle("auth-locked", !isAuthenticated);
@@ -1983,11 +2149,11 @@
       messageInput.focus();
     }
 
-    function sendMessage() {
+    async function sendMessage() {
       if (state.isSending) return;
 
       const txt = messageInput.value.trim();
-      if (!txt) return messageInput.focus();
+      if (!txt && !attachments.length) return messageInput.focus();
 
       if (state.editing) {
         const inlineInput = state.editTarget?.querySelector(".edit-textarea");
@@ -1995,14 +2161,16 @@
         return;
       }
 
+      const messageText = buildMessageWithAttachments(txt);
       toggleWelcome(false);
       messageInput.value = "";
-      ensureActiveChat().then(chatId => {
-        if (!chatId) return;
-        state.currentChatId = chatId;
-        sendToServer(txt);
-        messageInput.focus();
-      });
+
+      const chatId = await ensureActiveChat();
+      if (!chatId) return;
+      state.currentChatId = chatId;
+      sendToServer(messageText);
+      clearAttachments();
+      messageInput.focus();
     }
 
     function setAuthMode(mode) {
@@ -2109,6 +2277,7 @@
       state.currentChatId = null;
       state.pendingChat = false;
       clearEditingState();
+      clearAttachments();
       chatBox.innerHTML = "";
       renderChatList();
       refreshEditButton();
@@ -2121,6 +2290,15 @@
 
     welcomeSend.addEventListener("click", sendFirst);
     welcomeInput.addEventListener("keydown", e => { if (e.key === "Enter") sendFirst(); });
+
+    if (uploadBtn && fileInput) {
+      uploadBtn.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => {
+        const files = Array.from(fileInput.files || []);
+        addAttachments(files);
+        fileInput.value = "";
+      });
+    }
 
     sendBtn.addEventListener("click", () => {
       if (state.isSending) {
