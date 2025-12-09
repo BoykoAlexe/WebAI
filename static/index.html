@@ -224,7 +224,10 @@
       border-right: 1px solid rgba(0,0,0,0.06);
       transition: transform 0.3s ease, opacity 0.3s ease;
       height: 100vh;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
     }
 
     #layout.collapsed #sidebar {
@@ -327,11 +330,8 @@
       border: 1px solid rgba(0,0,0,0.05);
       border-radius: 12px;
       padding: 14px 12px;
-      margin-bottom: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      position: sticky;
-      top: 6px;
-      z-index: 2;
+      flex-shrink: 0;
     }
 
     [data-theme="dark"] .user-card {
@@ -444,9 +444,10 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-height: 4200px;
       overflow-y: auto;
       padding-right: 6px;
+      flex: 1;
+      padding-bottom: 12px;
     }
 
     .chat-item {
@@ -795,6 +796,13 @@
 
     #auth-overlay.hidden { display: none; }
 
+    .auth-locked #layout,
+    .auth-locked #sidebar-toggle,
+    .auth-locked .glow,
+    .auth-locked .logo {
+      display: none;
+    }
+
     .auth-card {
       width: 360px;
       background: white;
@@ -888,7 +896,7 @@
   </style>
 </head>
 
-<body>
+<body class="auth-locked">
 
   <!-- Switcher -->
   <div id="theme-toggle">
@@ -1032,6 +1040,10 @@
       sidebarCollapsed: false,
       pendingChat: false,
     };
+
+    function setAuthenticated(isAuthenticated) {
+      document.body.classList.toggle("auth-locked", !isAuthenticated);
+    }
 
     function renderMarkdown(text) {
       return DOMPurify.sanitize(marked.parse(text, { breaks: true }));
@@ -1381,6 +1393,7 @@
         state.chats = data.chats || [];
         state.currentChatId = null;
         renderChatList();
+        setAuthenticated(true);
         authOverlay.classList.add("hidden");
         localStorage.setItem("last_username", name);
         passwordInput.value = "";
@@ -1404,6 +1417,7 @@
         try {
           const parsed = JSON.parse(storedUser);
           setUser(parsed);
+          setAuthenticated(true);
           authOverlay.classList.add("hidden");
           const res = await fetch(`/api/chats?user_id=${encodeURIComponent(parsed.id)}`);
           state.chats = res.ok ? await res.json() : [];
@@ -1431,6 +1445,7 @@
     function handleLogout() {
       clearSession();
       setUser(null);
+      setAuthenticated(false);
       state.chats = [];
       state.currentChatId = null;
       state.pendingChat = false;
