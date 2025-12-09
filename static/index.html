@@ -826,12 +826,12 @@
     .message-actions {
       display: flex;
       gap: 6px;
-      justify-content: flex-end;
+      justify-content: flex-start;
       flex-wrap: wrap;
-      margin-top: 2px;
+      margin-top: 6px;
+      padding-left: 2px;
+      width: fit-content;
     }
-
-    .message.user .message-actions { justify-content: flex-end; }
 
     .message-action-btn {
       width: 30px;
@@ -1519,7 +1519,7 @@
     const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"></path></svg>`;
     const pencilIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"></path></svg>`;
 
-    function addCopyControl(container, rawText) {
+    function addCopyControl(messageEl, rawText) {
       const actions = document.createElement("div");
       actions.className = "message-actions";
       const btn = document.createElement("button");
@@ -1528,7 +1528,7 @@
       btn.title = "Скопировать";
       btn.innerHTML = copyIcon;
       btn.addEventListener("click", async () => {
-        const textToCopy = rawText || container.textContent || "";
+        const textToCopy = rawText || messageEl.textContent || "";
         try {
           await navigator.clipboard.writeText(textToCopy.trim());
           btn.classList.add("is-success");
@@ -1542,7 +1542,7 @@
         }
       });
       actions.appendChild(btn);
-      container.appendChild(actions);
+      messageEl.appendChild(actions);
     }
 
     function refreshEditButton() {
@@ -1553,8 +1553,6 @@
         return;
       }
 
-      const bubble = lastUser.querySelector(".bubble");
-      if (!bubble) return;
 
       const actions = document.createElement("div");
       actions.className = "message-actions";
@@ -1566,7 +1564,7 @@
       editBtn.addEventListener("click", () => startEditMode(lastUser));
 
       actions.appendChild(editBtn);
-      bubble.appendChild(actions);
+      lastUser.appendChild(actions);
       toggleEditMeta(state.editing);
     }
 
@@ -1591,11 +1589,12 @@
 
       bubble.appendChild(span);
 
+      msg.appendChild(bubble);
+
       if (role === "ai") {
-        addCopyControl(bubble, rawText);
+        addCopyControl(msg, rawText);
       }
 
-      msg.appendChild(bubble);
       chatBox.appendChild(msg);
       mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
 
