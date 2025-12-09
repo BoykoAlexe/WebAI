@@ -11,6 +11,7 @@ from storage import (
     get_chats,
     get_messages,
     register_user,
+    update_last_user_message,
 )
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
@@ -95,6 +96,31 @@ async def send_message(chat_id: str, msg: MessageCreate):
         ai_text = f"[Ошибка генерации: {str(e)}]"
 
     ai_msg, _ = add_message(chat_id, AI_NAME, ai_text, role="ai")
+
+    return {
+        "status": "ok",
+        "user_message": user_msg,
+        "ai_message": ai_msg,
+        "chat": updated_chat or chat,
+    }
+
+
+@router.put("/api/chats/{chat_id}/messages/last")
+async def edit_last_message(chat_id: str, msg: MessageCreate):
+    chat = get_chat(chat_id)
+    if not chat:
+        raise HTTPException(status_code=404, detail="Чат не найден")
+
+    user_msg, _ = update_last_user_message(chat_id, msg.username, msg.text)
+    if not user_msg:
+        raise HTTPException(status_code=404, detail="Нет сообщения для редактирования")
+
+    try:
+        ai_text = get_ai_response(msg.text)
+    except Exception as e:  # pragma: no cover - внешний сервис
+        ai_text = f"[Ошибка генерации: {str(e)}]"
+
+    ai_msg, updated_chat = add_message(chat_id, AI_NAME, ai_text, role="ai")
 
     return {
         "status": "ok",
