@@ -138,6 +138,48 @@ def get_chat(chat_id: str) -> Dict | None:
     return next((chat for chat in _data["chats"] if chat["id"] == chat_id), None)
 
 
+def update_last_user_message(
+    chat_id: str, username: str, text: str
+) -> Tuple[Optional[Dict], Optional[Dict]]:
+    """Обновляет последнее пользовательское сообщение в чате.
+
+    Возвращает кортеж (обновлённое сообщение пользователя, удалённое AI-сообщение).
+    Если подходящее сообщение не найдено, возвращает (None, None).
+    """
+
+    chat_message_indexes = [
+        idx for idx, msg in enumerate(_data["messages"]) if msg["chat_id"] == chat_id
+    ]
+    if not chat_message_indexes:
+        return None, None
+
+    last_user_index = next(
+        (
+            idx
+            for idx in reversed(chat_message_indexes)
+            if _data["messages"][idx]["role"] == "user"
+            and _data["messages"][idx]["username"] == username
+        ),
+        None,
+    )
+
+    if last_user_index is None:
+        return None, None
+
+    user_msg = _data["messages"][last_user_index]
+    user_msg["text"] = text
+    user_msg["updated_at"] = _now_iso()
+
+    removed_ai = None
+    last_index = chat_message_indexes[-1]
+    last_msg = _data["messages"][last_index]
+    if last_msg["role"] == "ai":
+        removed_ai = _data["messages"].pop(last_index)
+
+    _save_data(_data)
+    return user_msg, removed_ai
+
+
 def add_message(chat_id: str, username: str, text: str, role: str) -> Tuple[Dict, Optional[Dict]]:
     existing_messages = [msg for msg in _data["messages"] if msg["chat_id"] == chat_id]
     is_first_for_chat = not existing_messages and role == "user"

@@ -658,12 +658,15 @@
     .message.ai { text-align: left; }
 
     .bubble {
-      display: inline-block;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 8px;
       padding: 12px 16px;
       border-radius: 16px;
       background: white;
       box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      max-width: 80%;
+      max-width: 90%;
+      width: fit-content;
       transition: background 0.35s ease, box-shadow 0.35s ease;
     }
 
@@ -674,6 +677,12 @@
         var(--bubble-ai-bottom));
       border: 1px solid var(--bubble-border);
       box-shadow: 0 4px 12px var(--bubble-shadow);
+      max-width: 100%;
+    }
+
+    .message.is-editing .bubble {
+      outline: 2px dashed rgba(0, 83, 179, 0.3);
+      box-shadow: 0 6px 16px rgba(0, 83, 179, 0.18);
     }
 
     @keyframes fade-in {
@@ -712,6 +721,26 @@
     .welcome-wrapper {
       max-width: 720px;
       margin: 0 auto;
+    }
+
+    .input-meta {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .input-meta.hidden { display: none; }
+
+    .input-meta button {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
     }
 
     .input-wrapper input {
@@ -792,6 +821,44 @@
 
     .bubble ul, .bubble ol {
       padding-left: 22px;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .message.user .message-actions { justify-content: flex-start; }
+
+    .message-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(0, 83, 179, 0.08);
+      border: 1px solid rgba(0, 83, 179, 0.14);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .message-action-btn:hover {
+      background: rgba(0, 83, 179, 0.15);
+      box-shadow: 0 6px 12px rgba(0, 83, 179, 0.15);
+    }
+
+    .message-action-btn small { color: var(--muted); }
+
+    .action-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
     }
 
     /* Typing dots */
@@ -1171,6 +1238,14 @@
             <img src="/static/send.png" alt="send">
           </button>
         </div>
+        <div class="input-meta" id="edit-hint">
+          <span>Хотите изменить последнее сообщение?</span>
+          <button id="edit-last-btn" type="button">Редактировать</button>
+        </div>
+        <div class="input-meta hidden" id="edit-meta">
+          <span id="edit-label">Редактирование последнего сообщения</span>
+          <button id="cancel-edit" type="button">Отменить</button>
+        </div>
       </div>
     </main>
   </div>
@@ -1228,6 +1303,11 @@
     const sidebarToggle = document.getElementById("sidebar-toggle");
     const sidebarHideBtn = document.getElementById("sidebar-hide");
     const mainPanel = document.getElementById("main-panel");
+    const editHint = document.getElementById("edit-hint");
+    const editMeta = document.getElementById("edit-meta");
+    const editLastBtn = document.getElementById("edit-last-btn");
+    const cancelEditBtn = document.getElementById("cancel-edit");
+    const editLabel = document.getElementById("edit-label");
 
     const state = {
       user: null,
@@ -1239,6 +1319,8 @@
       isSending: false,
       pendingRequest: null,
       searchQuery: "",
+      editing: false,
+      editTarget: null,
     };
 
     function setAuthenticated(isAuthenticated) {
@@ -1275,26 +1357,128 @@
       }
     }
 
+    function getLastMessageByRole(role) {
+      const messages = chatBox.querySelectorAll(`.message.${role}`);
+      return messages[messages.length - 1] || null;
+    }
+
+    function toggleEditMeta(isEditing) {
+      const hasUserMessages = !!getLastMessageByRole("user");
+      if (editHint) {
+        editHint.classList.toggle("hidden", isEditing || !hasUserMessages);
+      }
+      if (editMeta) {
+        editMeta.classList.toggle("hidden", !isEditing);
+      }
+      if (editLastBtn) {
+        editLastBtn.disabled = !hasUserMessages;
+      }
+    }
+
+    function clearEditingState() {
+      if (state.editTarget) {
+        state.editTarget.classList.remove("is-editing");
+      }
+      state.editing = false;
+      state.editTarget = null;
+      toggleEditMeta(false);
+    }
+
+    function startEditMode(target) {
+      if (!target) return;
+      clearEditingState();
+      state.editing = true;
+      state.editTarget = target;
+      target.classList.add("is-editing");
+      const textValue = target.dataset.rawText || target.querySelector(".text")?.textContent || "";
+      messageInput.value = textValue.trim();
+      messageInput.focus();
+      toggleEditMeta(true);
+    }
+
     function renderMarkdown(text) {
       return DOMPurify.sanitize(marked.parse(text, { breaks: true }));
     }
 
-    function appendMessage(role, text, { markdown = false } = {}) {
+    function addCopyControl(container, rawText) {
+      const actions = document.createElement("div");
+      actions.className = "message-actions";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "message-action-btn";
+      btn.innerHTML = '<span class="action-dot"></span><span>Скопировать</span>';
+      btn.addEventListener("click", async () => {
+        const textToCopy = rawText || container.textContent || "";
+        try {
+          await navigator.clipboard.writeText(textToCopy.trim());
+          btn.innerHTML = '<span class="action-dot"></span><span>Скопировано!</span>';
+          setTimeout(() => {
+            btn.innerHTML = '<span class="action-dot"></span><span>Скопировать</span>';
+          }, 1200);
+        } catch (err) {
+          alert("Не удалось скопировать текст: " + (err?.message || ""));
+        }
+      });
+      actions.appendChild(btn);
+      container.appendChild(actions);
+    }
+
+    function refreshEditButton() {
+      chatBox.querySelectorAll(".message.user .message-actions").forEach(node => node.remove());
+      const lastUser = getLastMessageByRole("user");
+      if (!lastUser) {
+        toggleEditMeta(false);
+        return;
+      }
+
+      const bubble = lastUser.querySelector(".bubble");
+      if (!bubble) return;
+
+      const actions = document.createElement("div");
+      actions.className = "message-actions";
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "message-action-btn";
+      editBtn.innerHTML = '<span class="action-dot"></span><span>Редактировать</span><small>последнее</small>';
+      editBtn.addEventListener("click", () => startEditMode(lastUser));
+
+      actions.appendChild(editBtn);
+      bubble.appendChild(actions);
+      toggleEditMeta(state.editing);
+    }
+
+    function appendMessage(role, text, { markdown = false, messageId = null, rawText = text } = {}) {
       const msg = document.createElement("div");
       msg.className = "message " + role;
+      msg.dataset.role = role;
+      if (messageId) msg.dataset.messageId = messageId;
+      msg.dataset.rawText = rawText ?? text;
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
 
-      const span = document.createElement("span");
+      const span = document.createElement("div");
       span.className = "text";
 
-      span.innerHTML = markdown ? renderMarkdown(text) : text;
+      if (markdown) {
+        span.innerHTML = renderMarkdown(text);
+      } else {
+        span.textContent = text;
+      }
 
       bubble.appendChild(span);
+
+      if (role === "ai") {
+        addCopyControl(bubble, rawText);
+      }
+
       msg.appendChild(bubble);
       chatBox.appendChild(msg);
       mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
+
+      if (role === "user") {
+        refreshEditButton();
+      }
       return span;
     }
 
@@ -1424,6 +1608,8 @@
       chatBox.innerHTML = "";
       renderChatList();
       toggleWelcome(true);
+      clearEditingState();
+      refreshEditButton();
     }
 
     function setUser(user) {
@@ -1454,8 +1640,13 @@
         }
         toggleWelcome(false);
         data.forEach(msg => {
-          appendMessage(msg.role === "ai" ? "ai" : "user", msg.text, { markdown: msg.role === "ai" });
+          appendMessage(msg.role === "ai" ? "ai" : "user", msg.text, {
+            markdown: msg.role === "ai",
+            messageId: msg.id,
+            rawText: msg.text,
+          });
         });
+        refreshEditButton();
       } catch {
         appendMessage("ai", "Не удалось загрузить сообщения.");
       }
@@ -1503,7 +1694,7 @@
       const chatId = state.currentChatId;
       if (!chatId) return;
 
-      appendMessage("user", text);
+      appendMessage("user", text, { rawText: text });
       const typingMsg = appendTyping();
 
       cancelPendingRequest();
@@ -1545,10 +1736,87 @@
         }
 
         const aiText = data.ai_message?.text ?? "Ошибка сервера";
-        const aiSpan = appendMessage("ai", "", { markdown: true });
+        const aiSpan = appendMessage("ai", "", { markdown: true, rawText: aiText });
 
         await typeText(aiSpan, aiText, 22, renderMarkdown);
 
+      } catch (err) {
+        if (typingMsg.isConnected) {
+          typingMsg.remove();
+        }
+        if (err.name === "AbortError") {
+          appendMessage("ai", "Ответ остановлен.");
+        } else {
+          const fallback = err?.message && err.message !== "Failed to fetch"
+            ? err.message
+            : "Ошибка соединения с сервером.";
+          appendMessage("ai", fallback);
+        }
+      } finally {
+        if (state.pendingRequest === controller) {
+          state.pendingRequest = null;
+        }
+        setSendState(false);
+      }
+    }
+
+    async function resendEditedMessage(text) {
+      const chatId = state.currentChatId;
+      const target = state.editTarget || getLastMessageByRole("user");
+      if (!chatId || !target) return;
+
+      const textNode = target.querySelector(".text");
+      if (textNode) {
+        textNode.textContent = text;
+      }
+      target.dataset.rawText = text;
+
+      const lastAi = getLastMessageByRole("ai");
+      if (lastAi) {
+        lastAi.remove();
+      }
+
+      const typingMsg = appendTyping();
+      cancelPendingRequest();
+      const controller = new AbortController();
+      state.pendingRequest = controller;
+      setSendState(true);
+
+      try {
+        const res = await fetch(`/api/chats/${chatId}/messages/last`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: state.user.username, text }),
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          const message = errData.detail || "Сервер вернул ошибку.";
+          throw new Error(message);
+        }
+
+        const data = await res.json();
+        if (typingMsg.isConnected) {
+          typingMsg.remove();
+        }
+
+        if (data.chat) {
+          const idx = state.chats.findIndex(chat => chat.id === data.chat.id);
+          if (idx >= 0) {
+            state.chats[idx] = data.chat;
+          } else {
+            state.chats.unshift(data.chat);
+          }
+          renderChatList();
+        }
+
+        const aiText = data.ai_message?.text ?? "Ошибка сервера";
+        const aiSpan = appendMessage("ai", "", { markdown: true, rawText: aiText });
+        await typeText(aiSpan, aiText, 22, renderMarkdown);
+
+        clearEditingState();
+        refreshEditButton();
       } catch (err) {
         if (typingMsg.isConnected) {
           typingMsg.remove();
@@ -1590,6 +1858,12 @@
 
       const txt = messageInput.value.trim();
       if (!txt) return messageInput.focus();
+
+      if (state.editing) {
+        messageInput.value = "";
+        resendEditedMessage(txt);
+        return;
+      }
 
       toggleWelcome(false);
       messageInput.value = "";
@@ -1704,8 +1978,10 @@
       state.chats = [];
       state.currentChatId = null;
       state.pendingChat = false;
+      clearEditingState();
       chatBox.innerHTML = "";
       renderChatList();
+      refreshEditButton();
       toggleWelcome(true);
       authOverlay.classList.remove("hidden");
       setAuthMode("login");
@@ -1724,6 +2000,18 @@
       }
     });
     messageInput.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+
+    if (editLastBtn) {
+      editLastBtn.addEventListener("click", () => startEditMode(getLastMessageByRole("user")));
+    }
+
+    if (cancelEditBtn) {
+      cancelEditBtn.addEventListener("click", () => {
+        clearEditingState();
+        messageInput.value = "";
+        refreshEditButton();
+      });
+    }
 
     loginBtn.addEventListener("click", handleAuth);
     usernameInput.addEventListener("keydown", e => { if (e.key === "Enter") handleAuth(); });
@@ -1774,6 +2062,8 @@
     window.addEventListener("load", () => {
       usernameInput.focus();
       setAuthMode("login");
+      toggleEditMeta(false);
+      refreshEditButton();
       restoreSession();
       state.sidebarCollapsed = true;
       setSidebarCollapsed(true);
