@@ -327,6 +327,62 @@
       color: var(--muted);
     }
 
+    .sidebar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    #new-chat {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, #0054b3, #3399ff);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,83,179,0.2);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #new-chat:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(0,83,179,0.25); }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    #chat-search {
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.9);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #chat-search:focus {
+      border-color: rgba(0,80,180,0.35);
+      box-shadow: 0 8px 18px rgba(0,80,180,0.12);
+    }
+
+    [data-theme="dark"] #chat-search {
+      background: rgba(24,32,45,0.7);
+      border-color: rgba(255,255,255,0.08);
+      color: #e8ecf7;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    }
+
+    [data-theme="dark"] #chat-search:focus {
+      border-color: rgba(120,170,255,0.5);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.5);
+    }
+
     .user-card {
       background: rgba(255,255,255,0.8);
       border: 1px solid rgba(0,0,0,0.05);
@@ -426,22 +482,6 @@
       box-shadow: 0 6px 14px rgba(0,0,0,0.45);
     }
 
-    #new-chat {
-      width: 100%;
-      border: none;
-      background: linear-gradient(135deg, #0054b3, #3399ff);
-      color: white;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(0,83,179,0.2);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      margin-bottom: 14px;
-    }
-
-    #new-chat:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(0,83,179,0.25); }
-
     #chat-list {
       display: flex;
       flex-direction: column;
@@ -451,6 +491,10 @@
       flex: 1 1 auto;
       min-height: 0;
       padding-bottom: 12px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
     }
 
     .chat-item {
@@ -949,30 +993,38 @@
     </div>
   </div>
 
-  <div id="layout">
-    <aside id="sidebar">
-      <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
-        <img src="/static/close.svg" alt="" class="icon-close">
-        <span class="sr-only">Скрыть панель</span>
-      </button>
-      <div class="user-card">
-        <div class="user-top">
-          <div class="avatar" id="sidebar-avatar">G</div>
-          <div>
-            <div class="user-name" id="sidebar-username">Гость</div>
-            <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
-          </div>
-        </div>
-        <div class="pill">Онлайн</div>
+    <div id="layout">
+      <aside id="sidebar">
+        <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
+          <img src="/static/close.svg" alt="" class="icon-close">
+          <span class="sr-only">Скрыть панель</span>
+        </button>
+      <div class="sidebar-actions">
         <button id="new-chat">Новый чат</button>
-        <div class="logout-row">
-          <span class="user-meta">Управление профилем</span>
-          <button id="logout-btn" type="button">Выйти</button>
+        <div class="search-wrapper">
+          <input id="chat-search" type="search" placeholder="Поиск по чатам" autocomplete="off">
         </div>
       </div>
       <h3>Чаты</h3>
       <div id="chat-list"></div>
-    </aside>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-top">
+            <div class="avatar" id="sidebar-avatar">G</div>
+            <div>
+              <div class="user-name" id="sidebar-username">Гость</div>
+              <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
+            </div>
+          </div>
+          <div class="pill">Онлайн</div>
+          <div class="logout-row">
+            <span class="user-meta">Управление профилем</span>
+            <button id="logout-btn" type="button">Выйти</button>
+          </div>
+        </div>
+      </div>
+      </aside>
 
     <main id="main-panel">
 
@@ -1047,6 +1099,7 @@
     const sidebarAvatar = document.getElementById("sidebar-avatar");
     const logoutBtn = document.getElementById("logout-btn");
     const chatList = document.getElementById("chat-list");
+    const chatSearchInput = document.getElementById("chat-search");
     const newChatBtn = document.getElementById("new-chat");
     const layout = document.getElementById("layout");
     const sidebarToggle = document.getElementById("sidebar-toggle");
@@ -1062,6 +1115,7 @@
       pendingChat: false,
       isSending: false,
       pendingRequest: null,
+      searchQuery: "",
     };
 
     function setAuthenticated(isAuthenticated) {
@@ -1202,7 +1256,12 @@
 
     function renderChatList() {
       chatList.innerHTML = "";
-      state.chats.forEach(chat => {
+      const query = state.searchQuery.trim().toLowerCase();
+      const filtered = query
+        ? state.chats.filter(chat => (chat.title || "").toLowerCase().includes(query))
+        : state.chats;
+
+      filtered.forEach(chat => {
         const item = document.createElement("div");
         item.className = "chat-item" + (chat.id === state.currentChatId ? " active" : "");
         item.addEventListener("click", () => selectChat(chat.id));
@@ -1545,6 +1604,11 @@
       startNewChatSession();
       setSidebarCollapsed(true);
       welcomeInput.focus();
+    });
+
+    chatSearchInput.addEventListener("input", e => {
+      state.searchQuery = e.target.value;
+      renderChatList();
     });
 
     sidebarToggle.addEventListener("click", () => {
