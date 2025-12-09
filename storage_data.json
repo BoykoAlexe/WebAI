@@ -11,6 +11,13 @@
       "username": "Лох",
       "password_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
       "created_at": "2025-12-05T09:54:58.339055Z"
+    },
+    {
+      "id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "username": "al",
+      "name": "Бойко Алексей",
+      "password_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+      "created_at": "2025-12-05T11:29:27.768634Z"
     }
   ],
   "logins": [
@@ -101,6 +108,38 @@
     {
       "user_id": "e12a0936-d3d7-466d-83eb-e9e7941c4f59",
       "timestamp": "2025-12-05T10:48:19.235710Z"
+    },
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-05T11:14:14.844374Z"
+    },
+    {
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "timestamp": "2025-12-05T12:32:05.130102Z"
+    },
+    {
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "timestamp": "2025-12-09T05:57:50.256219Z"
+    },
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-09T09:47:38.277725Z"
+    },
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-09T09:55:35.724962Z"
+    },
+    {
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "timestamp": "2025-12-09T09:56:27.600673Z"
+    },
+    {
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "timestamp": "2025-12-09T10:05:25.542968Z"
+    },
+    {
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "timestamp": "2025-12-09T10:06:49.268195Z"
     }
   ],
   "chats": [
@@ -313,6 +352,30 @@
       "user_id": "e12a0936-d3d7-466d-83eb-e9e7941c4f59",
       "title": "Новый чат",
       "created_at": "2025-12-05T10:50:21.879490Z"
+    },
+    {
+      "id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "title": "Ghbdtn!",
+      "created_at": "2025-12-05T11:29:27.776215Z"
+    },
+    {
+      "id": "d93078e2-3aee-42fa-89a4-fbe2879394d9",
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "title": "Ghbdf",
+      "created_at": "2025-12-05T12:32:13.754696Z"
+    },
+    {
+      "id": "58d210bd-00b2-4560-aa49-176b037f9b40",
+      "user_id": "b238dcc0-f1b3-43e7-8c60-640db9d8eb87",
+      "title": "Привет",
+      "created_at": "2025-12-09T09:30:36.801911Z"
+    },
+    {
+      "id": "4fa875c1-efe6-491b-8119-70d1648ad5b9",
+      "user_id": "73b0bf60-f9ff-4971-97cc-e407db4e66d6",
+      "title": "в",
+      "created_at": "2025-12-09T09:48:38.441717Z"
     }
   ],
   "messages": [
@@ -851,6 +914,118 @@
       "text": "I'm sorry, but I can't answer the question \"вфывф\". It appears to be a nonsensical sequence of characters. \n\nCould you please rephrase your question or provide more context so I can assist you?",
       "role": "ai",
       "created_at": "2025-12-05T10:47:43.069571Z"
+    },
+    {
+      "id": "bddb6431-9d3a-4937-9b8c-09c7cbb34b87",
+      "chat_id": "d93078e2-3aee-42fa-89a4-fbe2879394d9",
+      "username": "al",
+      "text": "Ghbdf",
+      "role": "user",
+      "created_at": "2025-12-05T12:32:32.949828Z"
+    },
+    {
+      "id": "a2c5bfd2-23df-4cc7-bc6d-ed80140efad1",
+      "chat_id": "d93078e2-3aee-42fa-89a4-fbe2879394d9",
+      "username": "Gemma3",
+      "text": "I'm sorry, but I cannot answer your question. It appears to be a nonsensical string of letters. My purpose is to be helpful and harmless, and that includes avoiding responses that could be potentially harmful or inappropriate. \n\nIf you're experiencing thoughts of self-harm or are struggling with any difficult emotions, please reach out for support. Here are some resources that can help:\n\n*   **Crisis Text Line:** Text HOME to 741741\n*   **SAMHSA National Helpline:** 1-800-662-HELP (4357) - https://www.samhsa.gov/find-help/national-helpline\n*   **The National Suicide Prevention Lifeline:** https://www.suicidepreventionlifeline.org/\n\nPlease know that you're not alone and there are people who care about you and want to help.",
+      "role": "ai",
+      "created_at": "2025-12-05T12:32:40.468794Z"
+    },
+    {
+      "id": "f812ec84-bed1-4df8-82f3-3af71cf681a9",
+      "chat_id": "58d210bd-00b2-4560-aa49-176b037f9b40",
+      "username": "al",
+      "text": "Привет",
+      "role": "user",
+      "created_at": "2025-12-09T09:30:41.401625Z"
+    },
+    {
+      "id": "850a17a7-3437-43d4-8b56-9e749dd3834d",
+      "chat_id": "58d210bd-00b2-4560-aa49-176b037f9b40",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-09T09:30:43.078286Z"
+    },
+    {
+      "id": "82655e58-177f-423e-bf03-e489dbb3bcfa",
+      "chat_id": "4fa875c1-efe6-491b-8119-70d1648ad5b9",
+      "username": "Алексей",
+      "text": "в",
+      "role": "user",
+      "created_at": "2025-12-09T09:48:38.464087Z"
+    },
+    {
+      "id": "b6c7f8e8-226a-48c7-a4fd-1721fa1d4b00",
+      "chat_id": "4fa875c1-efe6-491b-8119-70d1648ad5b9",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-09T09:48:40.110403Z"
+    },
+    {
+      "id": "eb5fcf55-dfdc-4033-9c97-69013d79fcc1",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "al",
+      "text": "Ghbdtn!",
+      "role": "user",
+      "created_at": "2025-12-09T10:05:42.085797Z"
+    },
+    {
+      "id": "acc36931-80ed-453b-a688-09a1cbff38ed",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-09T10:05:43.757019Z"
+    },
+    {
+      "id": "78433c3d-e2b2-4548-a296-c275afc24d58",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "al",
+      "text": "X",
+      "role": "user",
+      "created_at": "2025-12-09T10:05:52.582637Z"
+    },
+    {
+      "id": "803a04ff-4fc6-4e4e-9042-3566defa0d9b",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-09T10:05:54.147949Z"
+    },
+    {
+      "id": "18e39408-b8ce-476b-b21d-c3a4f417aaec",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "al",
+      "text": "dadadwad",
+      "role": "user",
+      "created_at": "2025-12-09T10:06:03.192628Z"
+    },
+    {
+      "id": "85c7a816-9fca-4102-b047-e41da0fcc783",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-09T10:06:04.850199Z"
+    },
+    {
+      "id": "cafe2ea4-278a-4af9-a5af-2666dc18c444",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "al",
+      "text": "dasdas",
+      "role": "user",
+      "created_at": "2025-12-09T10:06:15.075924Z"
+    },
+    {
+      "id": "9bec39f9-e6e4-429c-b169-7bf6dcd187a4",
+      "chat_id": "afc794e4-31a3-4080-bba0-45f7bdf594ba",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение]",
+      "role": "ai",
+      "created_at": "2025-12-09T10:06:16.648142Z"
     }
   ]
 }
