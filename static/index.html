@@ -825,25 +825,34 @@
 
     .message-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: flex-end;
       flex-wrap: wrap;
+      margin-top: 2px;
     }
 
-    .message.user .message-actions { justify-content: flex-start; }
+    .message.user .message-actions { justify-content: flex-end; }
 
     .message-action-btn {
+      width: 30px;
+      height: 30px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      justify-content: center;
+      padding: 6px;
       background: rgba(0, 83, 179, 0.08);
-      border: 1px solid rgba(0, 83, 179, 0.14);
+      border: 1px solid rgba(0, 83, 179, 0.12);
       border-radius: 10px;
-      font-size: 13px;
       color: var(--text);
       cursor: pointer;
       transition: all 0.2s ease;
+    }
+
+    .message-action-btn svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      color: inherit;
     }
 
     .message-action-btn:hover {
@@ -851,14 +860,68 @@
       box-shadow: 0 6px 12px rgba(0, 83, 179, 0.15);
     }
 
-    .message-action-btn small { color: var(--muted); }
+    .message-action-btn.is-success {
+      background: rgba(0, 160, 80, 0.12);
+      border-color: rgba(0, 160, 80, 0.2);
+      color: #1f9d58;
+    }
 
-    .action-dot {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
+    .inline-edit-area {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .edit-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 83, 179, 0.22);
+      background: rgba(255,255,255,0.9);
+      resize: vertical;
+      font: inherit;
+      line-height: 1.5;
+      color: var(--text);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    [data-theme="dark"] .edit-textarea {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(255,255,255,0.12);
+      color: var(--text);
+    }
+
+    .inline-edit-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .inline-edit-controls button {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .inline-edit-controls .save-edit {
+      background: linear-gradient(135deg, #0054b3, #3399ff);
+      color: white;
+      box-shadow: 0 6px 14px rgba(0,83,179,0.25);
+    }
+
+    .inline-edit-controls .cancel-edit {
+      background: rgba(0,0,0,0.06);
+      color: var(--text);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .inline-edit-controls button:hover {
+      transform: translateY(-1px);
     }
 
     /* Typing dots */
@@ -1377,22 +1440,74 @@
 
     function clearEditingState() {
       if (state.editTarget) {
+        const textNode = state.editTarget.querySelector(".text");
+        const editArea = state.editTarget.querySelector(".inline-edit-area");
+        if (editArea) editArea.remove();
+        if (textNode) {
+          textNode.classList.remove("hidden");
+          textNode.textContent = state.editTarget.dataset.rawText || textNode.textContent;
+        }
+        delete state.editTarget.dataset.originalText;
         state.editTarget.classList.remove("is-editing");
       }
       state.editing = false;
       state.editTarget = null;
       toggleEditMeta(false);
+      refreshEditButton();
     }
 
     function startEditMode(target) {
       if (!target) return;
+      if (state.editTarget === target && state.editing) return;
+
       clearEditingState();
       state.editing = true;
       state.editTarget = target;
       target.classList.add("is-editing");
-      const textValue = target.dataset.rawText || target.querySelector(".text")?.textContent || "";
-      messageInput.value = textValue.trim();
-      messageInput.focus();
+
+      const bubble = target.querySelector(".bubble");
+      const textNode = target.querySelector(".text");
+      if (!bubble || !textNode) return;
+
+      target.querySelectorAll(".message-actions").forEach(node => node.remove());
+      messageInput.value = "";
+
+      const originalText = (target.dataset.rawText || textNode.textContent || "").trim();
+      target.dataset.originalText = originalText;
+      textNode.classList.add("hidden");
+
+      const editArea = document.createElement("div");
+      editArea.className = "inline-edit-area";
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "edit-textarea";
+      textarea.value = originalText;
+      textarea.setAttribute("aria-label", "Редактировать сообщение");
+
+      const controls = document.createElement("div");
+      controls.className = "inline-edit-controls";
+
+      const cancelBtn = document.createElement("button");
+      cancelBtn.type = "button";
+      cancelBtn.className = "cancel-edit";
+      cancelBtn.textContent = "Отмена";
+      cancelBtn.addEventListener("click", () => clearEditingState());
+
+      const saveBtn = document.createElement("button");
+      saveBtn.type = "button";
+      saveBtn.className = "save-edit";
+      saveBtn.textContent = "Сохранить";
+      saveBtn.addEventListener("click", () => {
+        const updated = textarea.value.trim();
+        if (!updated) return textarea.focus();
+        resendEditedMessage(updated);
+      });
+
+      controls.append(cancelBtn, saveBtn);
+      editArea.append(textarea, controls);
+      bubble.appendChild(editArea);
+
+      textarea.focus();
       toggleEditMeta(true);
     }
 
@@ -1400,20 +1515,27 @@
       return DOMPurify.sanitize(marked.parse(text, { breaks: true }));
     }
 
+    const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>`;
+    const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"></path></svg>`;
+    const pencilIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"></path></svg>`;
+
     function addCopyControl(container, rawText) {
       const actions = document.createElement("div");
       actions.className = "message-actions";
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "message-action-btn";
-      btn.innerHTML = '<span class="action-dot"></span><span>Скопировать</span>';
+      btn.title = "Скопировать";
+      btn.innerHTML = copyIcon;
       btn.addEventListener("click", async () => {
         const textToCopy = rawText || container.textContent || "";
         try {
           await navigator.clipboard.writeText(textToCopy.trim());
-          btn.innerHTML = '<span class="action-dot"></span><span>Скопировано!</span>';
+          btn.classList.add("is-success");
+          btn.innerHTML = checkIcon;
           setTimeout(() => {
-            btn.innerHTML = '<span class="action-dot"></span><span>Скопировать</span>';
+            btn.classList.remove("is-success");
+            btn.innerHTML = copyIcon;
           }, 1200);
         } catch (err) {
           alert("Не удалось скопировать текст: " + (err?.message || ""));
@@ -1439,7 +1561,8 @@
       const editBtn = document.createElement("button");
       editBtn.type = "button";
       editBtn.className = "message-action-btn";
-      editBtn.innerHTML = '<span class="action-dot"></span><span>Редактировать</span><small>последнее</small>';
+      editBtn.title = "Редактировать сообщение";
+      editBtn.innerHTML = pencilIcon;
       editBtn.addEventListener("click", () => startEditMode(lastUser));
 
       actions.appendChild(editBtn);
@@ -1768,8 +1891,15 @@
       const textNode = target.querySelector(".text");
       if (textNode) {
         textNode.textContent = text;
+        textNode.classList.remove("hidden");
+      }
+      const editArea = target.querySelector(".inline-edit-area");
+      if (editArea) {
+        editArea.remove();
       }
       target.dataset.rawText = text;
+
+      clearEditingState();
 
       const lastAi = getLastMessageByRole("ai");
       if (lastAi) {
@@ -1860,8 +1990,8 @@
       if (!txt) return messageInput.focus();
 
       if (state.editing) {
-        messageInput.value = "";
-        resendEditedMessage(txt);
+        const inlineInput = state.editTarget?.querySelector(".edit-textarea");
+        if (inlineInput) inlineInput.focus();
         return;
       }
 
