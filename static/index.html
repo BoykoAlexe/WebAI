@@ -1030,6 +1030,7 @@
       currentChatId: null,
       authMode: "login",
       sidebarCollapsed: false,
+      pendingChat: false,
     };
 
     function renderMarkdown(text) {
@@ -1170,7 +1171,15 @@
       });
     }
 
-  function setUser(user) {
+    function startNewChatSession() {
+      state.currentChatId = null;
+      state.pendingChat = true;
+      chatBox.innerHTML = "";
+      renderChatList();
+      toggleWelcome(true);
+    }
+
+    function setUser(user) {
       state.user = user;
       if (user) {
         const displayName = (user.name && user.name.trim()) || user.username;
@@ -1208,6 +1217,7 @@
       state.currentChatId = chatId;
       renderChatList();
       await loadMessages(chatId);
+      state.pendingChat = false;
       messageInput.focus();
     }
 
@@ -1221,8 +1231,24 @@
       if (!res.ok) throw new Error("Не удалось создать чат");
       const chat = await res.json();
       state.chats.unshift(chat);
+      state.pendingChat = false;
       renderChatList();
       return chat;
+    }
+
+    async function ensureActiveChat() {
+      if (state.currentChatId) {
+        return state.currentChatId;
+      }
+
+      const chat = await createChat("Новый чат");
+      if (chat) {
+        state.currentChatId = chat.id;
+        renderChatList();
+        return chat.id;
+      }
+
+      return null;
     }
 
     async function sendToServer(text) {
@@ -1284,10 +1310,9 @@
       const txt = welcomeInput.value.trim();
       if (!txt) return welcomeInput.focus();
 
-      if (!state.currentChatId) {
-        const firstChat = await createChat("Новый чат");
-        await selectChat(firstChat.id);
-      }
+      const chatId = await ensureActiveChat();
+      if (!chatId) return;
+      await selectChat(chatId);
 
       toggleWelcome(false);
       welcomeInput.value = "";
@@ -1301,8 +1326,12 @@
 
       toggleWelcome(false);
       messageInput.value = "";
-      sendToServer(txt);
-      messageInput.focus();
+      ensureActiveChat().then(chatId => {
+        if (!chatId) return;
+        state.currentChatId = chatId;
+        sendToServer(txt);
+        messageInput.focus();
+      });
     }
 
     function setAuthMode(mode) {
@@ -1358,8 +1387,7 @@
         nameInput.value = "";
 
         if (!state.chats.length) {
-          const chat = await createChat("Новый чат");
-          await selectChat(chat.id);
+          startNewChatSession();
           toggleWelcome(true);
         } else {
           await selectChat(state.chats[0].id);
@@ -1385,7 +1413,7 @@
             await selectChat(state.chats[0].id);
             toggleWelcome(false);
           } else {
-            toggleWelcome(true);
+            startNewChatSession();
           }
           return;
         } catch (err) {
@@ -1405,6 +1433,7 @@
       setUser(null);
       state.chats = [];
       state.currentChatId = null;
+      state.pendingChat = false;
       chatBox.innerHTML = "";
       renderChatList();
       toggleWelcome(true);
@@ -1435,10 +1464,8 @@
     }
     newChatBtn.addEventListener("click", async () => {
       if (!state.user) return;
-      const chat = await createChat("Новый чат");
-      await selectChat(chat.id);
+      startNewChatSession();
       setSidebarCollapsed(true);
-      toggleWelcome(true);
       welcomeInput.focus();
     });
 
