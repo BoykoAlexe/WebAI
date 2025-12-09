@@ -15,6 +15,12 @@
       "user_id": "1c79c3f4-b838-4dcf-93e4-c39f98acb198",
       "title": "Привет!",
       "created_at": "2025-12-09T12:30:48.645979Z"
+    },
+    {
+      "id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
+      "user_id": "1c79c3f4-b838-4dcf-93e4-c39f98acb198",
+      "title": "ЖЖЖ",
+      "created_at": "2025-12-09T13:00:31.915313Z"
     }
   ],
   "messages": [
@@ -50,6 +56,55 @@
       "text": "Я — большая языковая модель, разработанная компанией Google.",
       "role": "ai",
       "created_at": "2025-12-09T12:31:22.108822Z"
+    },
+    {
+      "id": "ae1babd5-8001-4272-a2f0-ec525acda28f",
+      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
+      "username": "AlYBoyko",
+      "text": "Для чего челоеку рот?",
+      "role": "user",
+      "created_at": "2025-12-09T12:43:13.948933Z",
+      "updated_at": "2025-12-09T12:59:47.851249Z"
+    },
+    {
+      "id": "c5db9ea7-67b1-495c-bcfd-77c2deeb744f",
+      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
+      "username": "Gemma3",
+      "text": "The answer is: **Evolutionarily, the cheek pouches of a human are linked to the ability to smell and taste.**\n\nHere's a breakdown of why this is the best answer and why it’s a fascinating evolutionary question:\n\n* **Olfaction and Taste:**  Humans have a remarkably acute sense of smell and taste. The cheek pouches are a result of our ancestors’ need to efficiently and quickly reach and consume food.\n* **Early Origins:** The evolution of cheek pouches goes back a long way, with evidence suggesting they were first present in early hominins.\n* **Function:** They evolved to allow humans to:\n    * **Retrieve food quickly:**  They provided a convenient way to quickly access food that was partially buried in the ground.\n    * **Detect subtle scents:** They were able to track the scent of food before it was fully exposed.\n\nLet me know if you'd like to delve into the evolutionary history of cheek pouches!",
+      "role": "ai",
+      "created_at": "2025-12-09T12:59:54.701790Z"
+    },
+    {
+      "id": "edf514f7-028d-4736-957c-80d18a19127e",
+      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
+      "username": "AlYBoyko",
+      "text": "ЖЖЖ",
+      "role": "user",
+      "created_at": "2025-12-09T13:00:31.924691Z"
+    },
+    {
+      "id": "913426db-c268-4851-9378-da1a6c30b0ca",
+      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
+      "username": "Gemma3",
+      "text": "Please provide the question! I need the question to be able to answer it. 😊 \n\nThe question is \"ЖЖЖ\" - you need to tell me what the question is.",
+      "role": "ai",
+      "created_at": "2025-12-09T13:00:34.328026Z"
+    },
+    {
+      "id": "6e2001d0-b349-4805-8a79-2412b98d49fb",
+      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
+      "username": "AlYBoyko",
+      "text": "Напиши 10 пунктов про пп",
+      "role": "user",
+      "created_at": "2025-12-09T13:05:42.322108Z"
+    },
+    {
+      "id": "c37c64c8-2ecd-4736-bdf0-3228cd9e68a4",
+      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
+      "username": "Gemma3",
+      "text": "Okay, here are 10 points about PPU (Pixel Shader Program):\n\n1.  **What they are:** PPU units are the core of the graphics pipeline in most modern games and devices. They generate the visual elements you see on your screen.\n\n2.  **Role in the Pipeline:** They handle the complex calculations needed to transform and display 3D objects, textures, lighting, and other visual effects.\n\n3.  **Vertex Processing:** PPU units primarily work with vertex data – the positions of the points that make up a 3D model.\n\n4.  **Rasterization:**  The process of converting 3D models into pixels (points) on the screen is called rasterization. The PPU units are critical for this step.\n\n5.  **Texture Mapping:**  PPU units are responsible for applying textures (images) to surfaces, making them look more realistic.\n\n6.  **Shading:**  They calculate the color of each pixel based on various factors like light, texture, and the surface properties.\n\n7.  **Lighting:**  PPU units heavily influence lighting effects – how light bounces around the scene, creating shadows and highlights.\n\n8.  **Blending:** They perform blending operations (like alpha blending) to combine different colors and gradients.\n\n9.  **Frame Buffer:** The final output of the PPU is the frame buffer, where the final image is stored.\n\n10. **Complexity:** PPU units are incredibly complex, involving many calculations and transformations, making them a significant portion of the rendering process.\n\n\nWould you like me to elaborate on any of these points, perhaps by providing more detail on a specific aspect of PPU programming or a particular function?",
+      "role": "ai",
+      "created_at": "2025-12-09T13:05:51.902647Z"
     }
   ]
 }

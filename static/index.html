@@ -1388,7 +1388,8 @@
         <h1>Готов помочь!</h1>
         <p>Задайте первый вопрос по ЛНА.</p>
 
-        <div class="input-wrapper welcome-wrapper">
+        <div class="input-wrapper welcome-wrapper has-attachments">
+          <button id="welcome-upload-btn" class="attach-btn" type="button" aria-label="Прикрепить файл" title="Прикрепить файл">+</button>
           <input type="text" id="welcome-input" placeholder="Введите сообщение..." autocomplete="off">
           <button id="welcome-send" class="send-btn-icon">
             <img src="/static/send.png" alt="send">
@@ -1439,6 +1440,7 @@
     const welcome = document.getElementById("welcome");
     const welcomeInput = document.getElementById("welcome-input");
     const welcomeSend = document.getElementById("welcome-send");
+    const welcomeUploadBtn = document.getElementById("welcome-upload-btn");
     const fixedInput = document.getElementById("fixed-input");
     const messageInput = document.getElementById("message");
     const sendBtn = document.getElementById("send-btn");
@@ -2291,8 +2293,9 @@
     welcomeSend.addEventListener("click", sendFirst);
     welcomeInput.addEventListener("keydown", e => { if (e.key === "Enter") sendFirst(); });
 
-    if (uploadBtn && fileInput) {
-      uploadBtn.addEventListener("click", () => fileInput.click());
+    const uploadButtons = [uploadBtn, welcomeUploadBtn].filter(Boolean);
+    if (uploadButtons.length && fileInput) {
+      uploadButtons.forEach(btn => btn.addEventListener("click", () => fileInput.click()));
       fileInput.addEventListener("change", () => {
         const files = Array.from(fileInput.files || []);
         addAttachments(files);
