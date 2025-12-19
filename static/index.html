@@ -961,11 +961,14 @@
       border-color: rgba(255, 255, 255, 0.08);
     }
 
-    .message-action-btn svg {
-      width: 16px;
-      height: 16px;
+    .message-action-btn svg,
+    .message-action-btn img {
+      width: 18px;
+      aspect-ratio: 1 / 1;
+      height: auto;
       display: block;
       color: inherit;
+      object-fit: contain;
     }
 
     .message-action-btn:hover {
@@ -1705,8 +1708,8 @@
     const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>`;
     const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"></path></svg>`;
     const pencilIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"></path></svg>`;
-    const likeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v10H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"></path><path d="m9 21 6.4-.8a2 2 0 0 0 1.7-1.6l1-5.6A2 2 0 0 0 17.1 11H14V7a3 3 0 0 0-3-3l-2 7Z"></path></svg>`;
-    const dislikeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13V3H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1Z"></path><path d="m9 3 6.4.8a2 2 0 0 1 1.7 1.6l1 5.6A2 2 0 0 1 17.1 13H14v4a3 3 0 0 1-3 3l-2-7Z"></path></svg>`;
+    const likeIcon = `<img src="/static/like.png" alt="Нравится">`;
+    const dislikeIcon = `<img src="/static/dislike.png" alt="Не нравится">`;
 
     function updateFeedbackButtons(container, feedback) {
       container.querySelectorAll(".feedback-btn").forEach(btn => {
