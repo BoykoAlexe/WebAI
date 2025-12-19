@@ -1331,10 +1331,6 @@
       <input id="username-input" type="text" placeholder="Логин" autocomplete="off" />
       <input id="password-input" type="password" placeholder="Пароль" autocomplete="current-password" />
       <button id="login-btn">Войти</button>
-      <div class="auth-switch">
-        Нет аккаунта?
-        <button id="switch-auth" type="button">Зарегистрироваться</button>
-      </div>
     </div>
   </div>
 
@@ -2327,13 +2323,18 @@
     loginBtn.addEventListener("click", handleAuth);
     usernameInput.addEventListener("keydown", e => { if (e.key === "Enter") handleAuth(); });
     passwordInput.addEventListener("keydown", e => { if (e.key === "Enter") handleAuth(); });
-    switchAuthBtn.addEventListener("click", () => {
-      const nextMode = state.authMode === "login" ? "register" : "login";
-      setAuthMode(nextMode);
-      passwordInput.value = "";
-      const focusTarget = nextMode === "login" ? usernameInput : nameInput;
-      focusTarget.focus();
-    });
+
+
+
+    if (switchAuthBtn) {
+      switchAuthBtn.addEventListener("click", () => {
+        const nextMode = state.authMode === "login" ? "register" : "login";
+        setAuthMode(nextMode);
+        passwordInput.value = "";
+        const focusTarget = nextMode === "login" ? usernameInput : nameInput;
+        focusTarget.focus();
+      });
+    };
 
     if (userToggle) {
       userToggle.addEventListener("click", e => {

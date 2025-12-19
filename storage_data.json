@@ -1,110 +1,294 @@
 {
   "users": [
     {
-      "id": "1c79c3f4-b838-4dcf-93e4-c39f98acb198",
-      "username": "AlYBoyko",
-      "name": "Бойко Алексей Юрьевич",
-      "password_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
-      "created_at": "2025-12-09T12:30:28.164509Z"
+      "id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "username": "123",
+      "name": "123",
+      "password_hash": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+      "created_at": "2025-12-17T07:13:15.417673Z"
     }
   ],
-  "logins": [],
-  "chats": [
+  "logins": [
     {
-      "id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
-      "user_id": "1c79c3f4-b838-4dcf-93e4-c39f98acb198",
-      "title": "Привет!",
-      "created_at": "2025-12-09T12:30:48.645979Z"
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:13:26.381744Z"
     },
     {
-      "id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
-      "user_id": "1c79c3f4-b838-4dcf-93e4-c39f98acb198",
-      "title": "ЖЖЖ",
-      "created_at": "2025-12-09T13:00:31.915313Z"
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:14:36.207286Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:15:39.719091Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:16:48.497666Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:20:36.823117Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:22:19.124936Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:23:19.545964Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:23:49.206673Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:25:15.528771Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:26:36.125740Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:42:51.807719Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:51:35.290024Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:52:31.046387Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:53:53.479836Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:54:55.297604Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-17T07:57:52.518408Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-19T05:39:42.693512Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-19T05:42:16.374594Z"
+    },
+    {
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "timestamp": "2025-12-19T05:42:42.675152Z"
+    }
+  ],
+  "chats": [
+    {
+      "id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "title": "23424",
+      "created_at": "2025-12-17T07:14:00.468812Z"
+    },
+    {
+      "id": "ef73270b-4d07-4352-85f9-e9f0bbc907a6",
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "title": "sdfsdfsdfsd",
+      "created_at": "2025-12-17T07:23:24.623386Z"
+    },
+    {
+      "id": "ab162712-e527-4c2c-91e4-938b45a932a1",
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "title": "dasfsdfs",
+      "created_at": "2025-12-17T07:51:41.749204Z"
+    },
+    {
+      "id": "64535d45-bc28-44be-ad0b-d078b6013834",
+      "user_id": "030ad47a-1534-4bc3-9a29-9c4af762bd44",
+      "title": "sdfsdfsdfs",
+      "created_at": "2025-12-17T07:52:43.428778Z"
     }
   ],
   "messages": [
     {
-      "id": "75350c13-9e62-4e55-b294-ec0d896d145b",
-      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
-      "username": "AlYBoyko",
+      "id": "12e7e790-1edf-4d5e-97cd-2e9bdd7b76b2",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "23424",
+      "role": "user",
+      "created_at": "2025-12-17T07:14:00.482810Z",
+      "updated_at": "2025-12-17T07:14:52.634278Z"
+    },
+    {
+      "id": "72016977-3154-4c7f-8c7f-3e3497307175",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: model 'gemma3:1b' not found (status code: 404)]",
+      "role": "ai",
+      "created_at": "2025-12-17T07:14:53.231476Z"
+    },
+    {
+      "id": "d0448a86-d018-4183-91cc-7623c06c1609",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "sdfsdgfdf",
+      "role": "user",
+      "created_at": "2025-12-17T07:15:49.418538Z"
+    },
+    {
+      "id": "9fc8c242-2d0a-4bef-90c6-cdfdc0fb9a87",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "Gemma3",
+      "text": "[Ошибка генерации: model 'gemma3:1b' not found (status code: 404)]",
+      "role": "ai",
+      "created_at": "2025-12-17T07:15:50.006193Z"
+    },
+    {
+      "id": "21a750ac-42d2-455a-a58f-9eddb9955e72",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "w423re",
+      "role": "user",
+      "created_at": "2025-12-17T07:16:52.488896Z"
+    },
+    {
+      "id": "27b1071f-59c3-43bd-bbbf-230f9fb5f4bb",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "Gpt-Oss",
+      "text": "**Answer: “Where.”**",
+      "role": "ai",
+      "created_at": "2025-12-17T07:17:52.290884Z"
+    },
+    {
+      "id": "40c811ae-828b-4b8b-9f10-ad88b2b7a363",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "Краткая информация по документу.\nВложения:\n- Положение_Синтетика.docx (39 КБ)",
+      "role": "user",
+      "created_at": "2025-12-17T07:18:50.623227Z"
+    },
+    {
+      "id": "c2ab8d22-3d77-49c9-92e2-80d92fc47784",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "Gpt-Oss",
+      "text": "Извините, но я не могу открыть вложения. Пожалуйста, скопируйте и вставьте текст документа (или основные его части), чтобы я смог предоставить краткую информацию.",
+      "role": "ai",
+      "created_at": "2025-12-17T07:18:53.829493Z"
+    },
+    {
+      "id": "834f9a06-8ca4-4e7e-8982-5997d88ad98a",
+      "chat_id": "ef73270b-4d07-4352-85f9-e9f0bbc907a6",
+      "username": "123",
+      "text": "sdfsdfsdfsd",
+      "role": "user",
+      "created_at": "2025-12-17T07:23:24.633571Z"
+    },
+    {
+      "id": "868071b8-d44e-4f23-9f53-374de5fb71e0",
+      "chat_id": "ef73270b-4d07-4352-85f9-e9f0bbc907a6",
+      "username": "Gpt-Oss",
+      "text": "I’m sorry, but I can’t find a clear question in your message. Could you please clarify what you’re asking?",
+      "role": "ai",
+      "created_at": "2025-12-17T07:23:27.054413Z"
+    },
+    {
+      "id": "bb7105c6-3df7-4303-b998-577dbd64ba58",
+      "chat_id": "ab162712-e527-4c2c-91e4-938b45a932a1",
+      "username": "123",
+      "text": "dasfsdfs",
+      "role": "user",
+      "created_at": "2025-12-17T07:51:41.761471Z"
+    },
+    {
+      "id": "5fc5168c-3fba-4ff8-bbf8-800efe6f2243",
+      "chat_id": "ab162712-e527-4c2c-91e4-938b45a932a1",
+      "username": "Gpt-Oss",
+      "text": "I’m sorry, but I’m not sure what you’re asking. “dasfsdfs” doesn’t correspond to a recognizable question or topic. Could you provide more details or clarify what you’d like to know?",
+      "role": "ai",
+      "created_at": "2025-12-17T07:51:48.299103Z"
+    },
+    {
+      "id": "84ad330b-eb56-46dd-8f15-a32bca65eba3",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "dfgfgdfg",
+      "role": "user",
+      "created_at": "2025-12-17T07:52:37.993155Z"
+    },
+    {
+      "id": "14a7c17e-c707-4027-af51-0ce692806aac",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "Gpt-Oss",
+      "text": "I’m sorry, but I don’t understand the question “dfgfgdfg.” Could you please clarify or provide more context?",
+      "role": "ai",
+      "created_at": "2025-12-17T07:52:40.421952Z"
+    },
+    {
+      "id": "e3d01f2a-e8dc-4d8c-bec0-feeca94fe4d6",
+      "chat_id": "64535d45-bc28-44be-ad0b-d078b6013834",
+      "username": "123",
+      "text": "sdfsdfsdfs",
+      "role": "user",
+      "created_at": "2025-12-17T07:52:43.437126Z"
+    },
+    {
+      "id": "e224cc21-2e96-44ba-8fc8-18ecebafc67a",
+      "chat_id": "64535d45-bc28-44be-ad0b-d078b6013834",
+      "username": "Gpt-Oss",
+      "text": "I’m sorry, but I don’t understand the question.",
+      "role": "ai",
+      "created_at": "2025-12-17T07:52:45.727519Z"
+    },
+    {
+      "id": "c35a987c-2a05-4c15-b09d-b7900b20147f",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "Что там?\nВложения:\n- Положение_Синтетика.docx (39 КБ)",
+      "role": "user",
+      "created_at": "2025-12-17T07:54:25.718853Z"
+    },
+    {
+      "id": "6c08cc1d-22ea-4da5-b849-12660bae9fe4",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "Gpt-Oss",
+      "text": "К сожалению, я не могу просмотреть вложения напрямую. Если вы пришлёте содержимое файла (или краткое описание того, что там находится), я смогу помочь разобраться в том, что там написано и ответить на ваш вопрос.",
+      "role": "ai",
+      "created_at": "2025-12-17T07:54:28.052688Z"
+    },
+    {
+      "id": "145c54a6-0033-4e2c-a065-5fc16b7d6eaf",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
       "text": "Привет!",
       "role": "user",
-      "created_at": "2025-12-09T12:30:48.661552Z",
-      "updated_at": "2025-12-09T12:31:06.175009Z"
+      "created_at": "2025-12-19T05:40:42.655553Z"
     },
     {
-      "id": "e40d692f-1720-48fe-bec1-797d18e006ab",
-      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
+      "id": "49573377-1d09-44fa-8ef9-f4a37011874a",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
       "username": "Gemma3",
-      "text": "Привет! (Hi!)\n\nTranslation: Hello!",
+      "text": "Привет! (Hello!)\n\nHow can I help you? 😊",
       "role": "ai",
-      "created_at": "2025-12-09T12:31:09.678392Z"
+      "created_at": "2025-12-19T05:40:47.792910Z"
     },
     {
-      "id": "fb622c89-6505-4c10-b8c9-c5981c817720",
-      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
-      "username": "AlYBoyko",
-      "text": "Кто ты?",
+      "id": "9f9cc1e9-78f8-4063-8b91-401b62119cc8",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
+      "username": "123",
+      "text": "Напиши список лучших актеров",
       "role": "user",
-      "created_at": "2025-12-09T12:31:20.787345Z"
+      "created_at": "2025-12-19T05:43:27.641523Z"
     },
     {
-      "id": "886c692e-c1fc-445d-98b2-ff6aeadb27a9",
-      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
+      "id": "b360929f-5639-4f6e-a450-be6faa9c9a80",
+      "chat_id": "ca0dd895-f1cb-469f-b23e-889ed775f808",
       "username": "Gemma3",
-      "text": "Я — большая языковая модель, разработанная компанией Google.",
+      "text": "Вот список лучших актеров, составленный на основе популярности, признания критиков и влияния на киноиндустрию. Это не исчерпывающий список, и у каждого своя личная оценка, но это, пожалуй, лучшие актеры на данный момент:\n\n**В рейтинге (согласно большинству источников):**\n\n1.  **Дэниел Дюплан:** Известен своей невероятной актерской игрой в \"Одиноком на Байере\" и многочисленных других фильмах.\n2.  **Бенедикт Камбербэтч:** Обладает огромным талантом, умением играть разные роли и часто играет сильных и сложных персонажей.\n3.  **Леонардо Ди Каприо:**  Обладают яркой харизмой,  успешного актерского мастерства и  неиссякаемой игривости.\n4.  **Кейт Хадсон:** Одна из самых востребованных актрис современности, которая  играет  в  балансе  разных  ролей.\n5.  **Крис Эванс:** Известен своей  увлекательной и разносторонней актерской  исполнительностью.\n6.  **Джим Керри:**  Один из самых узнаваемых актеров современности, он  хорошо известен  во  всех  жанрах.\n7.  **Хоакин Феникс:**  Обладает уникальным талантом и  выразительностью  в  исполнении  ролей.\n8.  **Кейт Уинслет:**  Одна из самых  заслуженно  и  оцениваема  актрис.\n9.  **Джейсон Стетфор:** Обладает  уникальной  и  захватывающей  актерской  исполнительностью.\n10. **Роберт Дауни-Милн:**  Удивительный актер, который умеет  иметь  неожиданные  роли.\n\n**Другие отличные актеры, которые стоит упомянуть:**\n\n*   Эма Стоун\n*   Эдгар Депп\n*   Памела Андерсон\n*   Лиам Нисон\n*   Брэд Питт\n*   Джулия Робертс\n*   Зендая\n*   Джон Траволта\n\n**Важно отметить:**\n\n*   Этот список субъективен и зависит от критериев оценки.\n*   В этом списке представлены актеры, которые имеют широкую известность и влияние.\n*   Оценка актерского мастерства может варьироваться в зависимости от жанра и актера.\n\nЕсли у вас есть более конкретные критерии (например, предпочтительные жанры или актеры из определенной эпохи), я могу предложить более узкий список.",
       "role": "ai",
-      "created_at": "2025-12-09T12:31:22.108822Z"
-    },
-    {
-      "id": "ae1babd5-8001-4272-a2f0-ec525acda28f",
-      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
-      "username": "AlYBoyko",
-      "text": "Для чего челоеку рот?",
-      "role": "user",
-      "created_at": "2025-12-09T12:43:13.948933Z",
-      "updated_at": "2025-12-09T12:59:47.851249Z"
-    },
-    {
-      "id": "c5db9ea7-67b1-495c-bcfd-77c2deeb744f",
-      "chat_id": "0229a0a2-2858-4e8d-9f26-65cf48f21a8d",
-      "username": "Gemma3",
-      "text": "The answer is: **Evolutionarily, the cheek pouches of a human are linked to the ability to smell and taste.**\n\nHere's a breakdown of why this is the best answer and why it’s a fascinating evolutionary question:\n\n* **Olfaction and Taste:**  Humans have a remarkably acute sense of smell and taste. The cheek pouches are a result of our ancestors’ need to efficiently and quickly reach and consume food.\n* **Early Origins:** The evolution of cheek pouches goes back a long way, with evidence suggesting they were first present in early hominins.\n* **Function:** They evolved to allow humans to:\n    * **Retrieve food quickly:**  They provided a convenient way to quickly access food that was partially buried in the ground.\n    * **Detect subtle scents:** They were able to track the scent of food before it was fully exposed.\n\nLet me know if you'd like to delve into the evolutionary history of cheek pouches!",
-      "role": "ai",
-      "created_at": "2025-12-09T12:59:54.701790Z"
-    },
-    {
-      "id": "edf514f7-028d-4736-957c-80d18a19127e",
-      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
-      "username": "AlYBoyko",
-      "text": "ЖЖЖ",
-      "role": "user",
-      "created_at": "2025-12-09T13:00:31.924691Z"
-    },
-    {
-      "id": "913426db-c268-4851-9378-da1a6c30b0ca",
-      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
-      "username": "Gemma3",
-      "text": "Please provide the question! I need the question to be able to answer it. 😊 \n\nThe question is \"ЖЖЖ\" - you need to tell me what the question is.",
-      "role": "ai",
-      "created_at": "2025-12-09T13:00:34.328026Z"
-    },
-    {
-      "id": "6e2001d0-b349-4805-8a79-2412b98d49fb",
-      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
-      "username": "AlYBoyko",
-      "text": "Напиши 10 пунктов про пп",
-      "role": "user",
-      "created_at": "2025-12-09T13:05:42.322108Z"
-    },
-    {
-      "id": "c37c64c8-2ecd-4736-bdf0-3228cd9e68a4",
-      "chat_id": "cdaaa37a-6443-4cdd-893f-27b1a55e5048",
-      "username": "Gemma3",
-      "text": "Okay, here are 10 points about PPU (Pixel Shader Program):\n\n1.  **What they are:** PPU units are the core of the graphics pipeline in most modern games and devices. They generate the visual elements you see on your screen.\n\n2.  **Role in the Pipeline:** They handle the complex calculations needed to transform and display 3D objects, textures, lighting, and other visual effects.\n\n3.  **Vertex Processing:** PPU units primarily work with vertex data – the positions of the points that make up a 3D model.\n\n4.  **Rasterization:**  The process of converting 3D models into pixels (points) on the screen is called rasterization. The PPU units are critical for this step.\n\n5.  **Texture Mapping:**  PPU units are responsible for applying textures (images) to surfaces, making them look more realistic.\n\n6.  **Shading:**  They calculate the color of each pixel based on various factors like light, texture, and the surface properties.\n\n7.  **Lighting:**  PPU units heavily influence lighting effects – how light bounces around the scene, creating shadows and highlights.\n\n8.  **Blending:** They perform blending operations (like alpha blending) to combine different colors and gradients.\n\n9.  **Frame Buffer:** The final output of the PPU is the frame buffer, where the final image is stored.\n\n10. **Complexity:** PPU units are incredibly complex, involving many calculations and transformations, making them a significant portion of the rendering process.\n\n\nWould you like me to elaborate on any of these points, perhaps by providing more detail on a specific aspect of PPU programming or a particular function?",
-      "role": "ai",
-      "created_at": "2025-12-09T13:05:51.902647Z"
+      "created_at": "2025-12-19T05:43:37.206229Z"
     }
   ]
 }

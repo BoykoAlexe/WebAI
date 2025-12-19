@@ -146,7 +146,6 @@ def update_last_user_message(
     Возвращает кортеж (обновлённое сообщение пользователя, удалённое AI-сообщение).
     Если подходящее сообщение не найдено, возвращает (None, None).
     """
-
     chat_message_indexes = [
         idx for idx, msg in enumerate(_data["messages"]) if msg["chat_id"] == chat_id
     ]
@@ -183,7 +182,6 @@ def update_last_user_message(
 def add_message(chat_id: str, username: str, text: str, role: str) -> Tuple[Dict, Optional[Dict]]:
     existing_messages = [msg for msg in _data["messages"] if msg["chat_id"] == chat_id]
     is_first_for_chat = not existing_messages and role == "user"
-
     message = {
         "id": str(uuid.uuid4()),
         "chat_id": chat_id,
