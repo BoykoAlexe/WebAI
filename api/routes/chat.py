@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from pathlib import Path
 
-from ..models.message import ChatCreate, LoginRequest, MessageCreate, RegisterRequest
+from ..models.message import ChatCreate, FeedbackUpdate, LoginRequest, MessageCreate, RegisterRequest
 from storage import (
     add_message,
     authenticate_user,
@@ -10,6 +10,7 @@ from storage import (
     get_chat,
     get_chats,
     get_messages,
+    set_message_feedback,
     register_user,
     update_last_user_message,
 )
@@ -103,6 +104,19 @@ async def send_message(chat_id: str, msg: MessageCreate):
         "ai_message": ai_msg,
         "chat": updated_chat or chat,
     }
+
+
+@router.patch("/api/messages/{message_id}/feedback")
+async def set_feedback(message_id: str, payload: FeedbackUpdate):
+    try:
+        message = set_message_feedback(message_id, payload.feedback)
+    except ValueError as exc:  # pragma: no cover - валидация входных данных
+        raise HTTPException(status_code=400, detail=str(exc))
+
+    if not message:
+        raise HTTPException(status_code=404, detail="Сообщение не найдено")
+
+    return message
 
 
 @router.put("/api/chats/{chat_id}/messages/last")
