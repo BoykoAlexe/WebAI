@@ -907,6 +907,16 @@
       padding: 0 16px 16px;
     }
 
+    #layout:not(.collapsed) #fixed-input {
+      left: calc(50% + 140px);
+    }
+
+    @media (max-width: 920px) {
+      #layout:not(.collapsed) #fixed-input {
+        left: 50%;
+      }
+    }
+
     /* Markdown */
     .bubble .text, .bubble .text * {
       line-height: 1.55;
