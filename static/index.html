@@ -958,12 +958,16 @@
 
     .message-action-btn svg,
     .message-action-btn img {
-      width: 18px;
+      width: 15px;
       aspect-ratio: 1 / 1;
       height: auto;
       display: block;
       color: inherit;
       object-fit: contain;
+    }
+
+    [data-theme="dark"] .message-action-btn.feedback-btn img {
+      filter: brightness(0) invert(1);
     }
 
     .message-action-btn:hover {
