@@ -189,6 +189,7 @@ def add_message(chat_id: str, username: str, text: str, role: str) -> Tuple[Dict
         "text": text,
         "role": role,
         "created_at": _now_iso(),
+        "feedback": None,
     }
 
     updated_chat = None
@@ -204,4 +205,22 @@ def add_message(chat_id: str, username: str, text: str, role: str) -> Tuple[Dict
 
 
 def get_messages(chat_id: str) -> List[Dict]:
-    return [msg for msg in _data["messages"] if msg["chat_id"] == chat_id]
+    messages = [msg for msg in _data["messages"] if msg["chat_id"] == chat_id]
+    for msg in messages:
+        msg.setdefault("feedback", None)
+    return messages
+
+
+def set_message_feedback(message_id: str, feedback: Optional[str]) -> Optional[Dict]:
+    """Сохраняет оценку (like/dislike) для сообщения."""
+
+    if feedback not in {None, "like", "dislike"}:
+        raise ValueError("feedback должно быть 'like', 'dislike' или null")
+
+    message = next((msg for msg in _data["messages"] if msg["id"] == message_id), None)
+    if not message:
+        return None
+
+    message["feedback"] = feedback
+    _save_data(_data)
+    return message

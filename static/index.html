@@ -951,6 +951,16 @@
       transition: all 0.2s ease;
     }
 
+    .message-action-btn.feedback-btn {
+      border: 1px solid rgba(0, 83, 179, 0.12);
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    [data-theme="dark"] .message-action-btn.feedback-btn {
+      background: rgba(26, 32, 44, 0.5);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
     .message-action-btn svg {
       width: 16px;
       height: 16px;
@@ -967,6 +977,18 @@
       background: transparent;
       border: none;
       color: #1f9d58;
+    }
+
+    .message-action-btn.is-active {
+      color: var(--accent);
+      background: rgba(51, 153, 255, 0.15);
+      border-color: rgba(0, 83, 179, 0.22);
+    }
+
+    .message-action-btn.is-dislike.is-active {
+      color: #d14343;
+      background: rgba(209, 67, 67, 0.12);
+      border-color: rgba(209, 67, 67, 0.28);
     }
 
     .inline-edit-area {
@@ -1683,30 +1705,92 @@
     const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>`;
     const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"></path></svg>`;
     const pencilIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"></path></svg>`;
+    const likeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v10H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"></path><path d="m9 21 6.4-.8a2 2 0 0 0 1.7-1.6l1-5.6A2 2 0 0 0 17.1 11H14V7a3 3 0 0 0-3-3l-2 7Z"></path></svg>`;
+    const dislikeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13V3H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1Z"></path><path d="m9 3 6.4.8a2 2 0 0 1 1.7 1.6l1 5.6A2 2 0 0 1 17.1 13H14v4a3 3 0 0 1-3 3l-2-7Z"></path></svg>`;
+
+    function updateFeedbackButtons(container, feedback) {
+      container.querySelectorAll(".feedback-btn").forEach(btn => {
+        const isActive = feedback && btn.dataset.type === feedback;
+        btn.classList.toggle("is-active", !!isActive);
+      });
+    }
+
+    async function sendFeedback(messageId, feedback) {
+      if (!messageId) return false;
+
+      try {
+        const res = await fetch(`/api/messages/${messageId}/feedback`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ feedback }),
+        });
+
+        if (!res.ok) {
+          const error = await res.json().catch(() => ({}));
+          const detail = error.detail || "Не удалось сохранить оценку";
+          throw new Error(detail);
+        }
+
+        return true;
+      } catch (err) {
+        alert(err?.message || "Не удалось сохранить оценку");
+        return false;
+      }
+    }
+
+    function createFeedbackButton(type, label, icon) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `message-action-btn feedback-btn${type === "dislike" ? " is-dislike" : ""}`;
+      btn.dataset.type = type;
+      btn.title = label;
+      btn.setAttribute("aria-label", label);
+      btn.innerHTML = icon;
+      return btn;
+    }
 
     function addCopyControl(messageEl, rawText) {
       const actions = document.createElement("div");
       actions.className = "message-actions";
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "message-action-btn";
-      btn.title = "Скопировать";
-      btn.innerHTML = copyIcon;
-      btn.addEventListener("click", async () => {
+      const likeBtn = createFeedbackButton("like", "Нравится ответ", likeIcon);
+      const dislikeBtn = createFeedbackButton("dislike", "Не нравится ответ", dislikeIcon);
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "message-action-btn";
+      copyBtn.title = "Скопировать";
+      copyBtn.innerHTML = copyIcon;
+      copyBtn.addEventListener("click", async () => {
         const textToCopy = rawText || messageEl.textContent || "";
         try {
           await navigator.clipboard.writeText(textToCopy.trim());
-          btn.classList.add("is-success");
-          btn.innerHTML = checkIcon;
+          copyBtn.classList.add("is-success");
+          copyBtn.innerHTML = checkIcon;
           setTimeout(() => {
-            btn.classList.remove("is-success");
-            btn.innerHTML = copyIcon;
+            copyBtn.classList.remove("is-success");
+            copyBtn.innerHTML = copyIcon;
           }, 1200);
         } catch (err) {
           alert("Не удалось скопировать текст: " + (err?.message || ""));
         }
       });
-      actions.appendChild(btn);
+
+      const handleFeedbackClick = async event => {
+        const target = event.currentTarget;
+        const current = messageEl.dataset.feedback || "";
+        const next = current === target.dataset.type ? null : target.dataset.type;
+
+        const saved = await sendFeedback(messageEl.dataset.messageId, next);
+        if (!saved) return;
+
+        messageEl.dataset.feedback = next || "";
+        updateFeedbackButtons(actions, next);
+      };
+
+      [likeBtn, dislikeBtn].forEach(btn => btn.addEventListener("click", handleFeedbackClick));
+
+      actions.append(likeBtn, dislikeBtn, copyBtn);
+      updateFeedbackButtons(actions, messageEl.dataset.feedback || "");
       messageEl.appendChild(actions);
     }
 
@@ -1733,12 +1817,13 @@
       toggleEditMeta(state.editing);
     }
 
-    function appendMessage(role, text, { markdown = false, messageId = null, rawText = text } = {}) {
+    function appendMessage(role, text, { markdown = false, messageId = null, rawText = text, feedback = null } = {}) {
       const msg = document.createElement("div");
       msg.className = "message " + role;
       msg.dataset.role = role;
       if (messageId) msg.dataset.messageId = messageId;
       msg.dataset.rawText = rawText ?? text;
+      if (feedback) msg.dataset.feedback = feedback;
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
@@ -1931,6 +2016,7 @@
             markdown: msg.role === "ai",
             messageId: msg.id,
             rawText: msg.text,
+            feedback: msg.feedback,
           });
         });
         refreshEditButton();
@@ -2023,7 +2109,12 @@
         }
 
         const aiText = data.ai_message?.text ?? "Ошибка сервера";
-        const aiSpan = appendMessage("ai", "", { markdown: true, rawText: aiText });
+        const aiSpan = appendMessage("ai", "", {
+          markdown: true,
+          rawText: aiText,
+          messageId: data.ai_message?.id,
+          feedback: data.ai_message?.feedback,
+        });
 
         await typeText(aiSpan, aiText, 22, renderMarkdown);
 
@@ -2106,7 +2197,12 @@
         }
 
         const aiText = data.ai_message?.text ?? "Ошибка сервера";
-        const aiSpan = appendMessage("ai", "", { markdown: true, rawText: aiText });
+        const aiSpan = appendMessage("ai", "", {
+          markdown: true,
+          rawText: aiText,
+          messageId: data.ai_message?.id,
+          feedback: data.ai_message?.feedback,
+        });
         await typeText(aiSpan, aiText, 22, renderMarkdown);
 
         clearEditingState();

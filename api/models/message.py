@@ -20,3 +20,7 @@ class RegisterRequest(BaseModel):
 class ChatCreate(BaseModel):
     user_id: str
     title: str | None = None
+
+
+class FeedbackUpdate(BaseModel):
+    feedback: str | None
