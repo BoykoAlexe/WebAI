@@ -216,8 +216,13 @@
 
     @media (max-width: 920px) {
       #layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: 0 1fr;
       }
+
+      #layout:not(.collapsed) {
+        grid-template-columns: minmax(260px, 82vw) 1fr;
+      }
+
       #sidebar {
         position: static;
         height: auto;
@@ -231,13 +236,26 @@
         grid-template-columns: 1fr;
       }
 
-      #layout:not(.collapsed)::after {
-        content: "";
+      #layout:not(.collapsed) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #sidebar-backdrop {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      #sidebar-backdrop {
         position: fixed;
         inset: 0;
         background: rgba(0,0,0,0.28);
         backdrop-filter: blur(3px);
         z-index: 15;
+      }
+
+      #sidebar-backdrop.visible {
+        display: block;
       }
     }
 
@@ -1545,6 +1563,8 @@
       </div>
       </aside>
 
+      <div id="sidebar-backdrop" aria-hidden="true"></div>
+
     <main id="main-panel">
 
       <div id="chat"></div>
@@ -1634,6 +1654,7 @@
     const layout = document.getElementById("layout");
     const sidebarToggle = document.getElementById("sidebar-toggle");
     const sidebarHideBtn = document.getElementById("sidebar-hide");
+    const sidebarBackdrop = document.getElementById("sidebar-backdrop");
     const mainPanel = document.getElementById("main-panel");
     const editHint = document.getElementById("edit-hint");
     const editMeta = document.getElementById("edit-meta");
@@ -1656,6 +1677,9 @@
       editing: false,
       editTarget: null,
     };
+
+    // Ensure the sidebar starts collapsed on mobile widths so chat messages remain visible.
+    setSidebarCollapsed(state.sidebarCollapsed);
 
     const attachments = [];
 
@@ -2081,6 +2105,10 @@
       if (!fixedInput) return;
       const shouldHide = window.innerWidth <= 640 && !state.sidebarCollapsed;
       fixedInput.classList.toggle("hidden-when-sidebar-open", shouldHide);
+      if (sidebarBackdrop) {
+        const shouldShowBackdrop = window.innerWidth <= 640 && !state.sidebarCollapsed;
+        sidebarBackdrop.classList.toggle("visible", shouldShowBackdrop);
+      }
     }
 
     function setSidebarCollapsed(collapsed) {
@@ -2088,6 +2116,10 @@
       layout.classList.toggle("collapsed", collapsed);
       updateSidebarControls();
       updateMobileInputVisibility();
+      if (sidebarBackdrop) {
+        const shouldShowBackdrop = window.innerWidth <= 640 && !collapsed;
+        sidebarBackdrop.classList.toggle("visible", shouldShowBackdrop);
+      }
     }
 
     function persistSession(user) {
@@ -2631,6 +2663,10 @@
 
     if (sidebarHideBtn) {
       sidebarHideBtn.addEventListener("click", () => setSidebarCollapsed(true));
+    }
+
+    if (sidebarBackdrop) {
+      sidebarBackdrop.addEventListener("click", () => setSidebarCollapsed(true));
     }
 
     window.addEventListener("resize", updateMobileInputVisibility);
