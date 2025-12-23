@@ -54,7 +54,6 @@
     @media (max-width: 640px) {
       body {
         overflow: auto;
-        padding-bottom: 96px;
       }
     }
 
@@ -111,7 +110,7 @@
     /* === SWITCHER === */
     #theme-toggle {
       position: fixed;
-      top: 16px;
+      top: 2px;
       right: 16px;
       width: 46px;
       height: 25px;
@@ -260,7 +259,8 @@
     }
 
     #sidebar {
-      position: relative;
+      position: sticky;
+      top: 0;
       padding: 18px 16px 30px;
       backdrop-filter: blur(8px);
       background: rgba(255,255,255,0.7);
@@ -282,9 +282,12 @@
 
     @media (max-width: 640px) {
       #sidebar {
+        position: sticky;
         inset: 0;
         max-width: 360px;
         width: 82vw;
+        height: 100vh;
+        overflow-y: auto;
         transform: translateX(-100%);
         box-shadow: 0 18px 38px rgba(0,0,0,0.2);
         z-index: 20;
@@ -370,10 +373,8 @@
       #sidebar-toggle {
         top: 16px;
         left: 16px;
-        background: rgba(255,255,255,0.9);
         border-radius: 12px;
         padding: 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       }
     }
 
