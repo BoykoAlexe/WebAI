@@ -1013,6 +1013,10 @@
     }
 
     @media (max-width: 640px) {
+      #fixed-input.hidden-when-sidebar-open {
+        display: none !important;
+      }
+
       #fixed-input {
         max-width: none;
         padding: 0 12px 16px;
@@ -2055,10 +2059,17 @@
       }
     }
 
+    function updateMobileInputVisibility() {
+      if (!fixedInput) return;
+      const shouldHide = window.innerWidth <= 640 && !state.sidebarCollapsed;
+      fixedInput.classList.toggle("hidden-when-sidebar-open", shouldHide);
+    }
+
     function setSidebarCollapsed(collapsed) {
       state.sidebarCollapsed = collapsed;
       layout.classList.toggle("collapsed", collapsed);
       updateSidebarControls();
+      updateMobileInputVisibility();
     }
 
     function persistSession(user) {
@@ -2164,6 +2175,9 @@
       renderChatList();
       await loadMessages(chatId);
       state.pendingChat = false;
+      if (window.innerWidth <= 640) {
+        setSidebarCollapsed(true);
+      }
       messageInput.focus();
     }
 
@@ -2600,6 +2614,8 @@
     if (sidebarHideBtn) {
       sidebarHideBtn.addEventListener("click", () => setSidebarCollapsed(true));
     }
+
+    window.addEventListener("resize", updateMobileInputVisibility);
 
     window.addEventListener("load", () => {
       usernameInput.focus();
