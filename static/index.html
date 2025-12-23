@@ -737,6 +737,22 @@
       transition: background 0.35s ease, box-shadow 0.35s ease;
     }
 
+    @media (max-width: 640px) {
+      .message {
+        display: flex;
+      }
+
+      .message.user { justify-content: flex-end; }
+      .message.ai { justify-content: flex-start; }
+
+      .bubble {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .message.user .bubble { margin-left: auto; }
+    }
+
     .message.ai .bubble {
       background: linear-gradient(to bottom,
         var(--bubble-ai-top),
