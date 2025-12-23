@@ -1625,12 +1625,14 @@
     const cancelEditBtn = document.getElementById("cancel-edit");
     const editLabel = document.getElementById("edit-label");
 
+    const isMobile = window.innerWidth <= 640;
+
     const state = {
       user: null,
       chats: [],
       currentChatId: null,
       authMode: "login",
-      sidebarCollapsed: false,
+      sidebarCollapsed: isMobile,
       pendingChat: false,
       isSending: false,
       pendingRequest: null,
@@ -2623,8 +2625,7 @@
       toggleEditMeta(false);
       refreshEditButton();
       restoreSession();
-      state.sidebarCollapsed = true;
-      setSidebarCollapsed(true);
+      setSidebarCollapsed(state.sidebarCollapsed);
     });
   </script>
 
