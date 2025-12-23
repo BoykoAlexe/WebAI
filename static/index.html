@@ -799,10 +799,8 @@
 
     @media (max-width: 640px) {
       #welcome {
-        padding: 80px 16px 24px;
         align-items: stretch;
-        justify-content: flex-start;
-        gap: 12px;
+        justify-content: center;
       }
 
       #welcome h1 {
@@ -1387,9 +1385,10 @@
 
     .auth-locked #layout,
     .auth-locked #sidebar-toggle,
+    .auth-locked #theme-toggle,
     .auth-locked .glow,
     .auth-locked .logo {
-      display: none;
+      display: none !important;
     }
 
     .auth-card {
