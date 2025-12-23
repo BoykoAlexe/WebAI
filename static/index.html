@@ -282,7 +282,6 @@
 
     @media (max-width: 640px) {
       #sidebar {
-        position: fixed;
         inset: 0;
         max-width: 360px;
         width: 82vw;
@@ -756,17 +755,8 @@
     }
 
     @media (max-width: 640px) {
-      .message {
-        display: flex;
-      }
-
       .message.user { justify-content: flex-end; }
       .message.ai { justify-content: flex-start; }
-
-      .bubble {
-        width: 100%;
-        max-width: 100%;
-      }
 
       .message.user .bubble { margin-left: auto; }
     }
