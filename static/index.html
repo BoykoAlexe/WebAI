@@ -2043,23 +2043,33 @@
       return msg;
     }
 
-    function typeText(element, fullText, delay = 22, renderer) {
+    function typeText(element, fullText, delay = 16, renderer) {
       return new Promise(resolve => {
-        let i = 0;
-        const timer = setInterval(() => {
-          if (i < fullText.length) {
-            element.textContent = fullText.substring(0, i + 1);
-            i++;
-            mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
-          } else {
-            clearInterval(timer);
+        let index = 0;
+        const step = fullText.length > 180 ? 4 : 2;
 
-            if (renderer) element.innerHTML = renderer(fullText);
+        const typeTick = () => {
+          if (index < fullText.length) {
+            index = Math.min(index + step, fullText.length);
+            const slice = fullText.substring(0, index);
+
+            if (renderer) {
+              element.innerHTML = renderer(slice);
+            } else {
+              element.textContent = slice;
+            }
+
+            mainPanel.scrollTo({ top: mainPanel.scrollHeight, behavior: "smooth" });
+            setTimeout(typeTick, delay);
+          } else {
             resolve();
           }
-        }, delay);
+        };
+
+        typeTick();
       });
     }
+
 
     function formatDate(ts) {
       if (!ts) return "";
@@ -2304,7 +2314,7 @@
           feedback: data.ai_message?.feedback,
         });
 
-        await typeText(aiSpan, aiText, 22, renderMarkdown);
+        await typeText(aiSpan, aiText, 12, renderMarkdown);
 
       } catch (err) {
         if (typingMsg.isConnected) {
@@ -2391,7 +2401,7 @@
           messageId: data.ai_message?.id,
           feedback: data.ai_message?.feedback,
         });
-        await typeText(aiSpan, aiText, 22, renderMarkdown);
+        await typeText(aiSpan, aiText, 12, renderMarkdown);
 
         clearEditingState();
         refreshEditButton();
