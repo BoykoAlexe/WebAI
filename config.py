@@ -9,6 +9,8 @@ class AppSettings(BaseSettings):
     HOST: str = "127.0.0.1"
     PORT: int = 8000
     WORKERS: int = 1
+    OLLAMA_MODEL: str = "gemma3:1b"
+    OLLAMA_BASE_URL: str = "http://127.0.0.1:11434"
 
     class Config:
         env_file = ".env"

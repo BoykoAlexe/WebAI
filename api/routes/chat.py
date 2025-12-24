@@ -16,10 +16,13 @@ from storage import (
 )
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
+from config import get_app_settings
 
 router = APIRouter()
 
-MODEL_NAME = "gemma3:1b"
+settings = get_app_settings()
+
+MODEL_NAME = settings.OLLAMA_MODEL
 AI_NAME = MODEL_NAME.split(":")[0].title()
 
 
@@ -31,7 +34,7 @@ def get_ai_response(question: str) -> str:
 
     Answer:"""
     prompt = ChatPromptTemplate.from_template(template)
-    model = OllamaLLM(model=MODEL_NAME)
+    model = OllamaLLM(model=MODEL_NAME, base_url=settings.OLLAMA_BASE_URL)
     chain = prompt | model
     return chain.invoke({"question": question}).strip()
 
