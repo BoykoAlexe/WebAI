@@ -17,6 +17,8 @@
       --bubble-border: rgba(0, 64, 150, 0.12);
       --bubble-shadow: rgba(0, 64, 150, 0.08);
 
+      --top-bar-height: 64px;
+
       --bg-gradient:
         radial-gradient(circle at 20% 20%, rgba(0, 80, 180, 0.15), transparent 25%),
         radial-gradient(circle at 80% 0%, rgba(0, 150, 255, 0.15), transparent 25%),
@@ -107,24 +109,48 @@
       box-shadow: inset 0 0 6px rgba(0,0,0,0.35);
     }
 
-    /* === SWITCHER === */
+    /* === TOP BAR & SWITCHER === */
+    #top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 18px;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.78);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] #top-bar {
+      background: rgba(15,23,42,0.82);
+      border-bottom-color: rgba(255,255,255,0.08);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+    }
+
+    #top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
     #theme-toggle {
-      position: fixed;
-      top: 2px;
-      right: 16px;
       width: 46px;
       height: 25px;
-      background: rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.85);
       border-radius: 30px;
       cursor: pointer;
-      z-index: 30;
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(0,0,0,0.2);
+      border: 1px solid rgba(0,0,0,0.18);
       display: flex;
       align-items: center;
       padding: 3px;
       transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
 
     [data-theme="dark"] #theme-toggle {
@@ -134,8 +160,8 @@
     }
 
     #toggle-thumb {
-      width: 19px;
-      height: 19px;
+      width: 18px;
+      height: 18px;
       background: white;
       border-radius: 50%;
       transition: transform 0.3s ease, background 0.3s ease;
@@ -143,31 +169,15 @@
     }
 
     [data-theme="dark"] #toggle-thumb {
-      transform: translateX(21px);
-      background: #e5e9ff;
+      transform: translateX(20px);
+      background: #cfd7ff;
     }
 
-    [data-theme="dark"] #theme-toggle {
-      background: rgba(20,25,35,0.6);
-      border-color: rgba(255,255,255,0.08);
-    }
     [data-theme="dark"] .message.user .bubble {
       background: #1f2937;
       color: #e8ecf7;
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    }
-    #toggle-thumb {
-      width: 18px;
-      height: 18px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.3s ease;
-    }
-
-    [data-theme="dark"] #toggle-thumb {
-      transform: translateX(20px);
-      background: #cfd7ff;
     }
 
     /* Градиенты подсветки */
@@ -202,7 +212,7 @@
     #layout {
       display: grid;
       grid-template-columns: 280px 1fr;
-      height: 100vh;
+      height: calc(100vh - var(--top-bar-height));
       min-height: 0;
       position: relative;
       z-index: 1;
@@ -231,7 +241,7 @@
     @media (max-width: 640px) {
       #layout {
         height: auto;
-        min-height: 100vh;
+        min-height: calc(100vh - var(--top-bar-height));
         grid-template-columns: 1fr;
       }
 
@@ -349,30 +359,21 @@
     }
 
     #sidebar-toggle {
-      position: fixed;
-      top: 24px;
-      left: 24px;
-      z-index: 25;
-
-      background: none;    /* ← убираем фон */
-      border: none;        /* ← убираем рамку */
-      padding: 0;
-
-      width: auto;         /* кнопка под размер иконки */
-      height: auto;
-
-      box-shadow: none;    /* ← убираем тень */
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
       cursor: pointer;
 
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     @media (max-width: 640px) {
       #sidebar-toggle {
-        top: 16px;
-        left: 16px;
         border-radius: 12px;
         padding: 8px;
       }
@@ -1399,6 +1400,7 @@
     #auth-overlay.hidden { display: none; }
 
     .auth-locked #layout,
+    .auth-locked #top-bar,
     .auth-locked #sidebar-toggle,
     .auth-locked #theme-toggle,
     .auth-locked .glow,
@@ -1568,17 +1570,20 @@
 
 <body class="auth-locked">
 
-  <!-- Switcher -->
-  <div id="theme-toggle">
-    <div id="toggle-thumb"></div>
-  </div>
+  <header id="top-bar">
+    <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
+      <img src="/static/menu.png" alt="" class="icon-menu">
+      <span class="sr-only">Показать панель</span>
+    </button>
+
+    <div id="top-bar-actions">
+      <div id="theme-toggle">
+        <div id="toggle-thumb"></div>
+      </div>
+    </div>
+  </header>
 
   <div class="glow"></div>
-
-  <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
-    <img src="/static/menu.png" alt="" class="icon-menu">
-    <span class="sr-only">Показать панель</span>
-  </button>
 
   <div id="auth-overlay">
     <div class="auth-card">
