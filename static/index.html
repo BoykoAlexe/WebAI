@@ -19,6 +19,10 @@
 
       --top-bar-height: 64px;
 
+      --sidebar-width: 280px;
+      --sidebar-mobile-width: 82vw;
+      --sidebar-mobile-max: 360px;
+
       --bg-gradient:
         radial-gradient(circle at 20% 20%, rgba(0, 80, 180, 0.15), transparent 25%),
         radial-gradient(circle at 80% 0%, rgba(0, 150, 255, 0.15), transparent 25%),
@@ -211,7 +215,7 @@
 
     #layout {
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: var(--sidebar-width) 1fr;
       height: calc(100vh - var(--top-bar-height));
       min-height: 0;
       position: relative;
@@ -229,7 +233,7 @@
       }
 
       #layout:not(.collapsed) {
-        grid-template-columns: minmax(260px, 82vw) 1fr;
+        grid-template-columns: minmax(260px, var(--sidebar-mobile-width)) 1fr;
       }
 
       #sidebar {
@@ -294,8 +298,8 @@
       #sidebar {
         position: sticky;
         inset: 0;
-        max-width: 360px;
-        width: 82vw;
+        max-width: var(--sidebar-mobile-max);
+        width: var(--sidebar-mobile-width);
         height: 100vh;
         overflow-y: auto;
         transform: translateX(-100%);
@@ -313,25 +317,34 @@
       border-color: rgba(255,255,255,0.06);
     }
 
-    .sidebar-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-
     .top-bar-sidebar-top {
       display: none;
       align-items: center;
+      justify-content: space-between;
       padding: 0 10px;
       border-bottom: none;
       height: 100%;
+      flex: 1 1 var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      width: 100%;
     }
 
     .top-bar-sidebar-top.active {
       display: flex;
+    }
+
+    @media (max-width: 920px) {
+      .top-bar-sidebar-top {
+        flex-basis: min(var(--sidebar-mobile-max), var(--sidebar-mobile-width));
+        max-width: min(var(--sidebar-mobile-max), var(--sidebar-mobile-width));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar-sidebar-top {
+        flex-basis: min(var(--sidebar-mobile-max), var(--sidebar-mobile-width));
+        max-width: min(var(--sidebar-mobile-max), var(--sidebar-mobile-width));
+      }
     }
 
     .sidebar-logo img {
@@ -376,23 +389,23 @@
     }
 
     #sidebar-toggle {
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(0,0,0,0.08);
+      background: transparent;
+      border: none;
       border-radius: 14px;
-      padding: 10px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      padding: 8px;
+      box-shadow: none;
       cursor: pointer;
 
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      transition: opacity 0.2s ease;
     }
 
     @media (max-width: 640px) {
       #sidebar-toggle {
         border-radius: 12px;
-        padding: 8px;
+        padding: 6px;
       }
     }
 
@@ -405,14 +418,6 @@
 
     #sidebar-toggle:hover img.icon-menu {
       opacity: 1;
-    }
-
-    #sidebar-toggle:hover { transform: translateY(-2px); }
-
-    [data-theme="dark"] #sidebar-toggle {
-      background: rgba(17,24,39,0.92);
-      color: #e5e7eb;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.45);
     }
 
     #sidebar h3 {
@@ -1247,10 +1252,9 @@
       filter: brightness(0) invert(1);
     }
 
-    [data-theme="dark"] .sidebar-top {
-      border-bottom-color: rgba(255,255,255,0.08);
+    [data-theme="dark"] #top-bar-sidebar-hide img.icon-close {
+      filter: brightness(0) invert(1);
     }
-
 
     .typing-dots div:nth-child(2) { animation-delay: 0.2s; }
     .typing-dots div:nth-child(3) { animation-delay: 0.4s; }
@@ -1595,7 +1599,7 @@
       <span class="sr-only">Показать панель</span>
     </button>
 
-    <div id="top-bar-sidebar-top" class="sidebar-top top-bar-sidebar-top" aria-hidden="true">
+    <div id="top-bar-sidebar-top" class="top-bar-sidebar-top" aria-hidden="true">
       <div class="sidebar-logo" aria-label="Atommaind">
         <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
       </div>
@@ -1630,43 +1634,34 @@
 
     <div id="layout">
       <aside id="sidebar">
-        <div class="sidebar-top">
-          <div class="sidebar-logo" aria-label="Atommaind">
-            <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
-          </div>
-          <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
-            <img src="/static/close.svg" alt="" class="icon-close">
-            <span class="sr-only">Скрыть панель</span>
+        <div class="sidebar-actions">
+          <button id="new-chat" class="action-btn">
+            <img src="/static/create.png" alt="" class="action-icon">
+            <span>Новый чат</span>
           </button>
+          <div class="search-wrapper">
+            <img src="/static/search.png" alt="" class="input-icon">
+            <input id="chat-search" type="search" placeholder="Поиск по чатам" autocomplete="off">
+          </div>
         </div>
-      <div class="sidebar-actions">
-        <button id="new-chat" class="action-btn">
-          <img src="/static/create.png" alt="" class="action-icon">
-          <span>Новый чат</span>
-        </button>
-        <div class="search-wrapper">
-          <img src="/static/search.png" alt="" class="input-icon">
-          <input id="chat-search" type="search" placeholder="Поиск по чатам" autocomplete="off">
-        </div>
-      </div>
-      <h3>Чаты</h3>
-      <div id="chat-list"></div>
+        <h3>Чаты</h3>
+        <div id="chat-list"></div>
 
-      <div class="sidebar-footer">
-        <div class="user-card" id="user-card">
-          <button class="user-card-toggle" id="user-toggle" type="button" aria-expanded="false">
-            <div class="avatar" id="sidebar-avatar">G</div>
-            <div class="user-text">
-              <div class="user-name" id="sidebar-username">Гость</div>
-              <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
+        <div class="sidebar-footer">
+          <div class="user-card" id="user-card">
+            <button class="user-card-toggle" id="user-toggle" type="button" aria-expanded="false">
+              <div class="avatar" id="sidebar-avatar">G</div>
+              <div class="user-text">
+                <div class="user-name" id="sidebar-username">Гость</div>
+                <div class="user-meta" id="sidebar-meta">Авторизуйтесь, чтобы начать.</div>
+              </div>
+              <span class="user-caret" aria-hidden="true"></span>
+            </button>
+            <div class="user-dropdown" id="user-dropdown" aria-hidden="true">
+              <button id="logout-btn" type="button" class="dropdown-btn">Выйти</button>
             </div>
-            <span class="user-caret" aria-hidden="true"></span>
-          </button>
-          <div class="user-dropdown" id="user-dropdown" aria-hidden="true">
-            <button id="logout-btn" type="button" class="dropdown-btn">Выйти</button>
           </div>
         </div>
-      </div>
       </aside>
 
       <div id="sidebar-backdrop" aria-hidden="true"></div>
