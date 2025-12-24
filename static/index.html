@@ -287,7 +287,7 @@
       }
     }
 
-    #sidebar {
+    #sidebar {           
       position: sticky;
       top: 0;
       padding: 18px 16px 30px;
@@ -335,7 +335,7 @@
     .sidebar-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 12px;
       padding-bottom: 6px;
       border-bottom: 1px solid rgba(0,0,0,0.05);
@@ -355,11 +355,14 @@
       height: auto;
       box-shadow: none;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #sidebar-hide img.icon-close {
-      width: 26px;
-      height: 38px;
+      width: 22px;
+      height: 22px;
 
       opacity: 0.9;
       transition: opacity .2s;
@@ -1590,6 +1593,10 @@
         <img src="/static/menu.png" alt="" class="icon-menu">
         <span class="sr-only">Показать панель</span>
       </button>
+      <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
+        <img src="/static/close.svg" alt="" class="icon-close">
+        <span class="sr-only">Скрыть панель</span>
+      </button>
     </div>
     <div class="top-actions">
       <div id="theme-toggle">
@@ -1620,10 +1627,6 @@
           <div class="sidebar-logo" aria-label="Atommaind">
             <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
           </div>
-          <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
-            <img src="/static/close.svg" alt="" class="icon-close">
-            <span class="sr-only">Скрыть панель</span>
-          </button>
         </div>
       <div class="sidebar-actions">
         <button id="new-chat" class="action-btn">
