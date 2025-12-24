@@ -131,6 +131,13 @@
       border-color: rgba(255,255,255,0.08);
     }
 
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1 1 auto;
+    }
+
     .top-actions {
       display: flex;
       align-items: center;
@@ -139,7 +146,7 @@
     }
 
     .top-logo {
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -347,18 +354,7 @@
     }
 
     .sidebar-top {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .sidebar-logo img {
-      height: 38px;
-      width: auto;
-      display: block;
+      display: none;
     }
 
     #sidebar-hide {
@@ -1602,18 +1598,20 @@
 <body class="auth-locked">
 
   <div id="top-bar">
-    <div class="top-actions">
-      <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
-        <img src="/static/menu.png" alt="" class="icon-menu">
-        <span class="sr-only">Показать панель</span>
-      </button>
-      <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
-        <img src="/static/close.svg" alt="" class="icon-close">
-        <span class="sr-only">Скрыть панель</span>
-      </button>
-    </div>
-    <div class="top-logo logo" aria-label="Atommaind">
-      <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
+    <div class="top-left">
+      <div class="top-logo logo" aria-label="Atommaind">
+        <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
+      </div>
+      <div class="top-actions">
+        <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
+          <img src="/static/menu.png" alt="" class="icon-menu">
+          <span class="sr-only">Показать панель</span>
+        </button>
+        <button id="sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
+          <img src="/static/close.svg" alt="" class="icon-close">
+          <span class="sr-only">Скрыть панель</span>
+        </button>
+      </div>
     </div>
     <div class="top-actions">
       <div id="theme-toggle">
@@ -1638,13 +1636,8 @@
     </div>
   </div>
 
-    <div id="layout">
-      <aside id="sidebar">
-        <div class="sidebar-top">
-          <div class="sidebar-logo" aria-label="Atommaind">
-            <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
-          </div>
-        </div>
+  <div id="layout">
+    <aside id="sidebar">
       <div class="sidebar-actions">
         <button id="new-chat" class="action-btn">
           <img src="/static/create.png" alt="" class="action-icon">
@@ -1673,9 +1666,9 @@
           </div>
         </div>
       </div>
-      </aside>
+    </aside>
 
-      <div id="sidebar-backdrop" aria-hidden="true"></div>
+    <div id="sidebar-backdrop" aria-hidden="true"></div>
 
     <main id="main-panel">
 
