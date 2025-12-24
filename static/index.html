@@ -107,30 +107,17 @@
       box-shadow: inset 0 0 6px rgba(0,0,0,0.35);
     }
 
-    /* === TOP CONTROLS === */
-    #top-controls {
-      position: fixed;
-      top: 12px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 30;
-      pointer-events: none;
-    }
-
-    #top-controls > * {
-      pointer-events: auto;
-    }
-
     /* === SWITCHER === */
     #theme-toggle {
+      position: fixed;
+      top: 2px;
+      right: 16px;
       width: 46px;
       height: 25px;
       background: rgba(255,255,255,0.65);
       border-radius: 30px;
       cursor: pointer;
+      z-index: 30;
       backdrop-filter: blur(8px);
       border: 1px solid rgba(0,0,0,0.2);
       display: flex;
@@ -362,6 +349,11 @@
     }
 
     #sidebar-toggle {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 25;
+
       background: none;    /* ← убираем фон */
       border: none;        /* ← убираем рамку */
       padding: 0;
@@ -378,13 +370,9 @@
     }
 
     @media (max-width: 640px) {
-      #top-controls {
-        top: 8px;
-        left: 12px;
-        right: 12px;
-      }
-
       #sidebar-toggle {
+        top: 16px;
+        left: 16px;
         border-radius: 12px;
         padding: 8px;
       }
@@ -1580,19 +1568,17 @@
 
 <body class="auth-locked">
 
-  <div id="top-controls">
-    <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
-      <img src="/static/menu.png" alt="" class="icon-menu">
-      <span class="sr-only">Показать панель</span>
-    </button>
-
-    <!-- Switcher -->
-    <div id="theme-toggle">
-      <div id="toggle-thumb"></div>
-    </div>
+  <!-- Switcher -->
+  <div id="theme-toggle">
+    <div id="toggle-thumb"></div>
   </div>
 
   <div class="glow"></div>
+
+  <button id="sidebar-toggle" aria-label="Показать панель" title="Показать панель">
+    <img src="/static/menu.png" alt="" class="icon-menu">
+    <span class="sr-only">Показать панель</span>
+  </button>
 
   <div id="auth-overlay">
     <div class="auth-card">
