@@ -322,13 +322,26 @@
       border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
+    .top-bar-sidebar-top {
+      display: none;
+      align-items: center;
+      padding: 0 10px;
+      border-bottom: none;
+      height: 100%;
+    }
+
+    .top-bar-sidebar-top.active {
+      display: flex;
+    }
+
     .sidebar-logo img {
       height: 38px;
       width: auto;
       display: block;
     }
 
-    #sidebar-hide {
+    #sidebar-hide,
+    #top-bar-sidebar-hide {
       background: none;
       border: none;
       padding: 0;
@@ -338,7 +351,8 @@
       cursor: pointer;
     }
 
-    #sidebar-hide img.icon-close {
+    #sidebar-hide img.icon-close,
+    #top-bar-sidebar-hide img.icon-close {
       width: 26px;
       height: 38px;
 
@@ -346,13 +360,16 @@
       transition: opacity .2s;
     }
 
-    #sidebar-hide:hover img.icon-close {
+    #sidebar-hide:hover img.icon-close,
+    #top-bar-sidebar-hide:hover img.icon-close {
       opacity: 1;
     }
 
-    #sidebar-hide:hover { transform: translateY(-1px); }
+    #sidebar-hide:hover,
+    #top-bar-sidebar-hide:hover { transform: translateY(-1px); }
 
-    [data-theme="dark"] #sidebar-hide {
+    [data-theme="dark"] #sidebar-hide,
+    [data-theme="dark"] #top-bar-sidebar-hide {
       background: none !important;
       box-shadow: none !important;
       color: #e5e7eb; /* можно оставить или удалить, не мешает */
@@ -1552,7 +1569,8 @@
       font-weight: 600;
       margin-left: 6px;
     }
-    #sidebar-hide img.icon-close {
+    #sidebar-hide img.icon-close,
+    #top-bar-sidebar-hide img.icon-close {
       transform: scaleX(-1);
       width: 22px;
       height: 22px;
@@ -1560,7 +1578,8 @@
       transition: opacity 0.25s ease;
     }
 
-    #sidebar-hide:hover img.icon-close {
+    #sidebar-hide:hover img.icon-close,
+    #top-bar-sidebar-hide:hover img.icon-close {
       opacity: 1;
     }
 
@@ -1575,6 +1594,16 @@
       <img src="/static/menu.png" alt="" class="icon-menu">
       <span class="sr-only">Показать панель</span>
     </button>
+
+    <div id="top-bar-sidebar-top" class="sidebar-top top-bar-sidebar-top" aria-hidden="true">
+      <div class="sidebar-logo" aria-label="Atommaind">
+        <img src="/static/logo_atommaind.svg" alt="Логотип Atommaind">
+      </div>
+      <button id="top-bar-sidebar-hide" aria-label="Скрыть панель" title="Скрыть панель">
+        <img src="/static/close.svg" alt="" class="icon-close">
+        <span class="sr-only">Скрыть панель</span>
+      </button>
+    </div>
 
     <div id="top-bar-actions">
       <div id="theme-toggle">
@@ -1730,6 +1759,8 @@
     const newChatBtn = document.getElementById("new-chat");
     const layout = document.getElementById("layout");
     const sidebarToggle = document.getElementById("sidebar-toggle");
+    const topBarSidebarTop = document.getElementById("top-bar-sidebar-top");
+    const topBarSidebarHideBtn = document.getElementById("top-bar-sidebar-hide");
     const sidebarHideBtn = document.getElementById("sidebar-hide");
     const sidebarBackdrop = document.getElementById("sidebar-backdrop");
     const mainPanel = document.getElementById("main-panel");
@@ -2177,6 +2208,21 @@
       if (srText) srText.textContent = label;
 
       sidebarToggle.style.display = state.sidebarCollapsed ? "inline-flex" : "none";
+
+      const shouldShowTopBarSidebar = !state.sidebarCollapsed;
+      if (topBarSidebarTop) {
+        topBarSidebarTop.classList.toggle("active", shouldShowTopBarSidebar);
+        topBarSidebarTop.setAttribute("aria-hidden", shouldShowTopBarSidebar ? "false" : "true");
+      }
+
+      if (topBarSidebarHideBtn) {
+        const hideLabel = "Скрыть панель";
+        topBarSidebarHideBtn.setAttribute("aria-label", hideLabel);
+        topBarSidebarHideBtn.title = hideLabel;
+        const srTopHideText = topBarSidebarHideBtn.querySelector(".sr-only");
+        if (srTopHideText) srTopHideText.textContent = hideLabel;
+        topBarSidebarHideBtn.style.display = shouldShowTopBarSidebar ? "inline-flex" : "none";
+      }
 
       if (sidebarHideBtn) {
         const hideLabel = "Скрыть панель";
@@ -2750,6 +2796,10 @@
 
     if (sidebarHideBtn) {
       sidebarHideBtn.addEventListener("click", () => setSidebarCollapsed(true));
+    }
+
+    if (topBarSidebarHideBtn) {
+      topBarSidebarHideBtn.addEventListener("click", () => setSidebarCollapsed(true));
     }
 
     if (sidebarBackdrop) {
